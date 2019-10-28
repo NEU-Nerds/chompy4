@@ -31,39 +31,26 @@ def main():
         #list of new nodes sorted by rho
         cords = SortedSet(util.newNodes(n), key=lambda x: sum(x))
 
-        # print("Pre-1  cords: " + str(cords))
         #Handle extended constraints from previous nodes very poorly
+        #DO THIS WITH SET FUNCTIONALITY?
         for even in evens:
-            # expandParents = util.getExpandParents(even, n)
+            #get all parents of all evens and remove try to remove them from the list
             for parent in util.getExpandParents(even, n):
                 try:
-                    # print("removing1: " + str(parent))
-                    if tuple(parent) == (4,2,2):
-                        print("CASE 1 from even: " + str(even))
                     cords.remove(parent)
                 except:
                     pass
-        # print("Pre0  cords: " + str(cords))
-        #Go through each node left (will be an even one)
+
+        #Go through each node left (they will be even)
         while len(cords) > 0:
             node = cords.pop(0)
-            # print("node: " + str(node))
             #remove all parents from cords
             parents = util.getParents(node, n)
-            # print("Parents: " + str(parents))
             for parent in parents:
-                # print("parent: " + str(parent))
-                # print("Pre  cords: " + str(cords))
                 try:
-                    # print("removing2: " + str(parent))
-                    if tuple(parent) == (4,2,2):
-                        print("CASE 2 from node: " + str(node))
                     cords.remove(parent)
-
                 except:
                     pass
-                # print("Post cords: " + str(cords))
-
             evens.add(node)
 
         print(str(n)+"X"+str(n)+" evens: " + str(evens))

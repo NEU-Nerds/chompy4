@@ -1,18 +1,25 @@
 def newNodes(n):
 	#for x(-1) in range(n)
 	#for x(-2) in range(x(-1)+1)
+
 	nodes = []
+	#calling the rec function with all the first rows
 	for i in range(0,n+1):
 		nodes = nodes + newNodesRec(n, [i])
-	nodes = nodes + newNodesRecReversed(n-1, [n])
+
+	#this was here but I forgot why and commenting out didn't seem to change anything?
+	# nodes = nodes + newNodesRecReversed(n-1, [n])
 
 	retNodes = []
+	#just cleaning up any 0's or empty boards, and converting to tuple
 	for node in nodes:
 		node = list(node)
 		x = len(node) - 1
+		#removing 0 entries
 		while x >= 0 and node[x] == 0:
 			del node[x]
 			x -= 1
+		#making sure not empty
 		if len(node) == 0:
 			continue
 		retNodes.append(tuple(node))
@@ -20,14 +27,19 @@ def newNodes(n):
 	return retNodes
 
 def newNodesRec(n, part):
+	#break case, means part has grown to be n long (square board shape)
 	if len(part) == n:
 		return [tuple(part)]
 	else:
 		nodes = []
+		#go through all the possiblities for this row
 		for i in range(part[0], n+1):
+			#add all the possiblities for the rest of the rows recursively
 			nodes = nodes + newNodesRec(n, [i] + part)
 		return nodes
 
+#I thought this was necessary, now I forget why...
+"""
 def newNodesRecReversed(n, part):
 	if len(part) == n:
 		return [tuple(part)]
@@ -36,7 +48,7 @@ def newNodesRecReversed(n, part):
 		for i in range(0, part[-1]+1):
 			nodes = nodes + newNodesRec(n, part + [i])
 		return nodes
-
+"""
 # def getParents(node, n):
 # 	parents = []
 # 	node = list(node)
@@ -68,18 +80,19 @@ def newNodesRecReversed(n, part):
 
 def getParents(node, n):
 	node = list(node)
+	#make sure square form
 	for i in range(n-len(node)):
 		node.append(0)
-	# print("Node: " + str(node))
+
 	parents = []
+
+	#i is the current row we are lookign at, from bottom to top
 	i = len(node) - 1
 	while i >= 0:
-		# print("i: " + str(i))
 		#j is index of first row with a different value
 		j = i-1
 		while j >= 0 and node[j] == node[i]:
 			j -= 1
-		# print("j: " + str(j))
 
 		#maxDiff is difference between next non same row and the i row
 		maxDiff = 0
@@ -89,49 +102,35 @@ def getParents(node, n):
 		else:
 			maxDiff = node[j] - node[i]
 
-		# print("maxDiff: " + str(maxDiff))
-
 		#go through each diff
 		for d in range(1, maxDiff+1):
-			# print("d: " + str(d))
-
 			#make a coppy of the node
 			baseParent = node[:]
 			#set the top of the same rows equal to its val + diff
 			baseParent[j+1] += d
-			# print("baseParent: " + str(baseParent))
 
-			#if i the only row with that val (baseparent is the only parent for this d)
+			#if i the only row with that val then baseparent is the only parent for this d
+			#(there are no subsequent rows to work through)
 			if j == i - 1:
-				# print("j == i-1")
 				parents.append(baseParent[:])
 			#else go through recursively all the below rows
 			else:
-				# print("baseParent[j+2:i+1]: "  +str(baseParent[j+2:i+1]))
+				#the max the row can go to, set to n then adjusted if there is an above row
 				max = n
 				if j >= 0:
 					max = baseParent[j+1]
+				#get all the possiblites for the rows under the top row with the same value
 				subParents = getParentsRec(baseParent[j+2:i+1] , max)
-				# print("subParents: " + str(subParents))
 				for sub in subParents:
+					#combining the sub possiblity with the rest of the board
 					newParent = baseParent[:j+2] + sub + baseParent[i+1:]
-					# print("newParent: " + str(newParent))
 					parents.append(newParent)
+		#sets the next row to work on to be the row above the top same row
+		i = j
 
-			# for k in range(j+1, i+1):
-			# 	parent = node[:]
-			# 	print("k: " + str(k))
-			# 	for l in range(j+1, k+1):
-			# 		print("l: " + str(l))
-			# 		parent[l] += d
-			#
-			#
-			# 	print("parent: " + str(parent))
-			# 	parents.append(tuple(parent))
-			# print("final parent: " + str(parent))
 
-		i  = j
 	retParents = []
+	#clean out any zereos
 	for parent in parents:
 		x = len(parent) - 1
 		while x >= 0 and parent[x] == 0:
@@ -150,29 +149,32 @@ def getParents(node, n):
 def getParentsRec(subNode, max):
 	#subnode is a list of rows with equal vals,
 	#max is the maximum the rows can go to
-	# print("\nsubNode: " + str(subNode) + "\tmax: " + str(max))
+
 	subNode = list(subNode)
 	parents = []
 
+	#all the options for the first row
 	for i in range(subNode[0], max+1):
-		# print("i: " + str(i))
+		#coppy the subNode
 		baseParent = subNode[:]
+		#set the first row
 		baseParent[0] = i
+		#if that's the only row then that's that
 		if len(subNode) == 1:
-			# print("len == 1")
 			parents.append(baseParent)
-
+		#else add the modified first row to all the possible permutations of the other rows
 		else:
 			newSecondParents = getParentsRec(subNode[1:], i)
 			for secondParent in newSecondParents:
 				parents.append([i] + secondParent)
+
 	return parents
 
-
+#TODO, right now just returning all parents
 def getExpandParents(even, n):
 	parents = getParents(even, n)
 	return parents
-	#similar to the recursive generation of states. Ty, do this later
+	#similar to the recursive generation of states.
 
 """
 def mirror(board):
