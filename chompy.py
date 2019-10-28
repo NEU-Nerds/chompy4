@@ -22,7 +22,7 @@ sess data: cord list
 
 """
 
-MAX_N = 2
+MAX_N = 10
 
 def main():
     evens = seed()
@@ -30,35 +30,36 @@ def main():
     for n in range(2, MAX_N+1):
 
         cords = SortedSet(util.newNodes(n), key=lambda x: sum(x))
-
+        # print("Pre-1  cords: " + str(cords))
         for even in evens:
             # expandParents = util.getExpandParents(even, n)
             for parent in util.getExpandParents(even, n):
                 try:
-                    print("removing1")
+                    # print("removing1: " + str(parent))
                     cords.remove(parent)
                 except:
                     pass
-        print("Pre0  cords: " + str(cords))
+        # print("Pre0  cords: " + str(cords))
         while len(cords) > 0:
             node = cords.pop(0)
-            print("node: " + str(node))
+            # print("node: " + str(node))
             #remove all parents from cords
             parents = util.getParents(node, n)
-            print("Parents: " + str(parents))
+            # print("Parents: " + str(parents))
             for parent in parents:
-                print("parent: " + str(parent))
-                print("Pre  cords: " + str(cords))
+                # print("parent: " + str(parent))
+                # print("Pre  cords: " + str(cords))
                 try:
-                    print("removing2")
+                    # print("removing2: " + str(parent))
                     cords.remove(parent)
 
                 except:
                     pass
-                print("Post cords: " + str(cords))
+                # print("Post cords: " + str(cords))
 
             evens.add(node)
-        print(str(n)+"X"+str(n)+" evens: " + str(evens))
+
+        print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)))
 
 
 
