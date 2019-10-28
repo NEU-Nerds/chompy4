@@ -49,12 +49,13 @@ def main():
                     pass
 
             evens.add(node)
+        print(str(n)+"X"+str(N)+" evens: " + str(evens))
 
 
 
 def seed():
 
-    evens = set([(1)])
+    evens = set([(1,)])
     return evens
 
 
