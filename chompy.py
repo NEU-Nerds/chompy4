@@ -28,12 +28,21 @@ def main():
     evens = seed()
 
     for n in range(n, MAX_N+1):
+
         cords = SortedSet(util.newNodes(n), key=lambda x: sum(x))
+
+        for even in evens:
+            # expandParents = util.getExpandParents(even, n)
+            for parent in util.getExpandParents(even, n):
+                try:
+                    cords.remove(parent)
+                except:
+                    pass
 
         while len(cords) > 0:
             node = cords.pop(0)
             #remove all parents from cords
-            for parent in util.getParents(node):
+            for parent in util.getParents(node, n):
                 try:
                     cords.remove(parent)
                 except:
