@@ -44,8 +44,10 @@ def getParents(node, n):
 			n1[r] = n1[r] + i
 			parents.append(n1)
 		for j in range(numConsecutive + 1):
+			#j is the number rows being added to
 			n2 = node[:]
-			for k in range(k):
+			for k in range(max):
+				#k is the number to be added
 				n2[r+j] = n2[r+j] + k
 			parents.append(n2)
 	#if any consecutive rows are the same, both of them can be increased by the same amount
@@ -53,4 +55,5 @@ def getParents(node, n):
 
 
 def getExpandParents(even, n):
-	pass
+	parents = getParents(even, n)
+	#similar to the recursive generation of states. Ty, do this later
