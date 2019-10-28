@@ -11,17 +11,31 @@ def newBoardRecurse(b, n, boards):
 	r1 = newRow(b[-1])
 	for r in r1:
 
-
-def newRow(prevRow):
-	if prevRow
-	return [i for i in range(prevRow+1)]
-
-<<<<<<< HEAD
-def getParents(node):
-=======
 def getParents(node, n):
-	pass
+	parents = []
+	for r in range(1, len(node)):
+		max = n
+		if r != 0:
+			max = node[r-1]
+		numConsecutive = 0
+		for i in range(len(node)):
+			if not r == len(node)-i:
+				if node[r] == node[r+i]:
+					numConsecutive = i
+			else:
+				break
+		for i in range(node[r] - max + 1):
+			#add the parents only increasing 1 row
+			n1 = node[:]
+			n1[r] = n1[r] + i
+			parents.append(n1)
+		for j in range(numConsecutive + 1):
+			n2 = node[:]
+			for k in range(k):
+				n2[r+j] = n2[r+j] + k
+			parents.append(n2)
+	#if any consecutive rows are the same, both of them can be increased by the same amount
+	return parents
 
-def getExpandParents(even, n):
-	pass
->>>>>>> a490f3fda68bb84c9bb65551086c0f7e17d3f1ce
+
+def getExpandParents(node, n):
