@@ -27,6 +27,7 @@ def newNodesRecReversed(n, part):
 
 def getParents(node, n):
 	parents = []
+	node = list(node)
 	for r in range(1, len(node)):
 		max = n
 		if r != 0:
@@ -56,4 +57,5 @@ def getParents(node, n):
 
 def getExpandParents(even, n):
 	parents = getParents(even, n)
+	return parents
 	#similar to the recursive generation of states. Ty, do this later
