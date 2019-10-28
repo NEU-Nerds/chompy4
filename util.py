@@ -16,6 +16,15 @@ def newNodesRec(n, part):
 			nodes = nodes + newNodesRec(n, [i] + part)
 		return nodes
 
+def newNodesRecReversed(n, part):
+	if len(part) == n:
+		return [tuple(part)]
+	else:
+		nodes = []
+		for i in range(1, part[-1]+1):
+			nodes = nodes + newNodesRec(n, part + [i])
+		return nodes
+
 def getParents(node, n):
 	parents = []
 	for r in range(1, len(node)):
