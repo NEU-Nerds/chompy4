@@ -16,4 +16,12 @@ def newRow(prevRow):
 	if prevRow
 	return [i for i in range(prevRow+1)]
 
+<<<<<<< HEAD
 def getParents(node):
+=======
+def getParents(node, n):
+	pass
+
+def getExpandParents(even, n):
+	pass
+>>>>>>> a490f3fda68bb84c9bb65551086c0f7e17d3f1ce
