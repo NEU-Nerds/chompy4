@@ -8,7 +8,6 @@ def newNodes(n):
 
 	retNodes = []
 	for node in nodes:
-
 		node = list(node)
 		x = len(node) - 1
 		while x >= 0 and node[x] == 0:
