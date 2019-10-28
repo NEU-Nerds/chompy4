@@ -22,24 +22,29 @@ sess data: cord list
 
 """
 
-MAX_N = 10
+MAX_N = 5
 
 def main():
     evens = seed()
 
     for n in range(2, MAX_N+1):
-
+        #list of new nodes sorted by rho
         cords = SortedSet(util.newNodes(n), key=lambda x: sum(x))
+
         # print("Pre-1  cords: " + str(cords))
+        #Handle extended constraints from previous nodes very poorly
         for even in evens:
             # expandParents = util.getExpandParents(even, n)
             for parent in util.getExpandParents(even, n):
                 try:
                     # print("removing1: " + str(parent))
+                    if tuple(parent) == (4,2,2):
+                        print("CASE 1 from even: " + str(even))
                     cords.remove(parent)
                 except:
                     pass
         # print("Pre0  cords: " + str(cords))
+        #Go through each node left (will be an even one)
         while len(cords) > 0:
             node = cords.pop(0)
             # print("node: " + str(node))
@@ -51,6 +56,8 @@ def main():
                 # print("Pre  cords: " + str(cords))
                 try:
                     # print("removing2: " + str(parent))
+                    if tuple(parent) == (4,2,2):
+                        print("CASE 2 from node: " + str(node))
                     cords.remove(parent)
 
                 except:
@@ -59,6 +66,7 @@ def main():
 
             evens.add(node)
 
+        print(str(n)+"X"+str(n)+" evens: " + str(evens))
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)))
 
 

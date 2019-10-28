@@ -2,11 +2,23 @@ def newNodes(n):
 	#for x(-1) in range(n)
 	#for x(-2) in range(x(-1)+1)
 	nodes = []
-	for i in range(1,n+1):
+	for i in range(0,n+1):
 		nodes = nodes + newNodesRec(n, [i])
 	nodes = nodes + newNodesRecReversed(n-1, [n])
 
-	return nodes
+	retNodes = []
+	for node in nodes:
+
+		node = list(node)
+		x = len(node) - 1
+		while x >= 0 and node[x] == 0:
+			del node[x]
+			x -= 1
+		if len(node) == 0:
+			continue
+		retNodes.append(tuple(node))
+
+	return retNodes
 
 def newNodesRec(n, part):
 	if len(part) == n:
@@ -22,7 +34,7 @@ def newNodesRecReversed(n, part):
 		return [tuple(part)]
 	else:
 		nodes = []
-		for i in range(1, part[-1]+1):
+		for i in range(0, part[-1]+1):
 			nodes = nodes + newNodesRec(n, part + [i])
 		return nodes
 
@@ -123,7 +135,7 @@ def getParents(node, n):
 	retParents = []
 	for parent in parents:
 		x = len(parent) - 1
-		while parent[x] == 0:
+		while x >= 0 and parent[x] == 0:
 			del parent[x]
 			x -= 1
 		retParents.append(tuple(parent))
