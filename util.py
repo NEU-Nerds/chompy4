@@ -1,27 +1,33 @@
 def newNodes(n):
-	N = []
-	r1 = newRow(n)
-	for r in r1:
-		r2 = newRow(r)
-	return N
+	#for x(-1) in range(n)
+	#for x(-2) in range(x(-1)+1)
+	nodes = []
+	for i in range(1,n+1):
+		nodes = nodes + newNodesRec(n, [i])
+	nodes = nodes + newNodesRecReversed(n-1, [n])
+	return nodes
 
-def newBoardRecurse(b, n, boards):
-	if len(b) == n:
-		return (b, n, boards)
-	r1 = newRow(b[-1])
-	for r in r1:
+def newNodesRec(n, part):
+	if len(part) == n:
+		return [tuple(part)]
+	else:
+		nodes = []
+		for i in range(part[0], n+1):
+			nodes = nodes + newNodesRec(n, [i] + part)
+		return nodes
+
+def newNodesRecReversed(n, part):
+	if len(part) == n:
+		return [tuple(part)]
+	else:
+		nodes = []
+		for i in range(1, part[-1]+1):
+			nodes = nodes + newNodesRec(n, part + [i])
+		return nodes
 
 
-def newRow(prevRow):
-	if prevRow
-	return [i for i in range(prevRow+1)]
-
-<<<<<<< HEAD
-def getParents(node):
-=======
 def getParents(node, n):
 	pass
 
 def getExpandParents(even, n):
 	pass
->>>>>>> a490f3fda68bb84c9bb65551086c0f7e17d3f1ce
