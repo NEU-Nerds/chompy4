@@ -22,78 +22,49 @@ sess data: cord list
 
 """
 
-MAX_N = 10
+MAX_N = 11
 
 def main():
     evens = seed()
 
-    for n in range(2, MAX_N+1):
-        #list of new nodes sorted by rho
-        cords = SortedSet(util.newNodes(n), key=lambda x: sum(x))
+    evens = expand(evens, 2, MAX_N - 2)
+    print(str(MAX_N)+"X"+str(MAX_N)+" #evens: " + str(len(evens)))
 
-        #Handle extended constraints from previous nodes very poorly
-        #DO THIS WITH SET FUNCTIONALITY?
-        for even in evens:
-            #get all parents of all evens and remove try to remove them from the list
-            cords -= util.getExpandParents(even, n)
-            # for parent in util.getExpandParents(even, n):
-            #     try:
-            #         cords.remove(parent)
-            #     except:
-            #         pass
+def expand(evens, initN , deltaN):
+    finalN = initN + deltaN
 
-        #Go through each node left (they will be even)
-        while len(cords) > 0:
-            node = cords.pop(0)
-            #remove all parents from cords
-            cords -= util.getParents(node, n)
-            # parents = util.getParents(node, n)
-            # for parent in parents:
-            #     try:
-            #         cords.remove(parent)
-            #     except:
-            #         pass
+    #initialize cords to empty sets for each possible rho
+    cords = {}
+    for i in range(1,(finalN*finalN)+1):
+        cords[i] = set([])
+
+    #get all the new nods for (initN, finalN]
+    newNodes = []
+    for n in range(initN, finalN+1):
+        newNodes = newNodes + util.newNodes(n)
+    #add new nodes to cords
+    for node in newNodes:
+        cords[sum(node)].add(node)
+
+    #get all parents of all evens and remove try to remove them from the list
+    evenParents = util.getParentsBatch(evens, n)
+    for parent in evenParents:
+        cords[sum(parent)].discard(parent)
+
+    for key in cords.keys():
+        if len(cords[key]) == 0:
+            continue
+
+        parents = util.getParentsBatch(cords[key], n)
+        for parent in parents:
+            cords[sum(parent)].discard(parent)
+
+        for node in cords[key]:
             evens.add(node)
 
-        # print(str(n)+"X"+str(n)+" evens: " + str(evens))
-        print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)))
+        cords[key] = set([])
+    return evens
 
-def main2():
-    evens = seed()
-
-    #list of new nodes sorted by rho
-    newNodes = []
-    for n in range(2,MAX_N+1):
-        newNodes = newNodes + util.newNodes(n)
-
-    cords = SortedSet(newNodes, key=lambda x: sum(x))
-
-    #Handle extended constraints from previous nodes very poorly
-    #DO THIS WITH SET FUNCTIONALITY?
-    for even in evens:
-        #get all parents of all evens and remove try to remove them from the list
-        cords -= util.getExpandParents(even, n)
-        # for parent in util.getExpandParents(even, n):
-        #     try:
-        #         cords.remove(parent)
-        #     except:
-        #         pass
-
-    #Go through each node left (they will be even)
-    while len(cords) > 0:
-        node = cords.pop(0)
-        #remove all parents from cords
-        cords -= util.getParents(node, n)
-        # parents = util.getParents(node, n)
-        # for parent in parents:
-        #     try:
-        #         cords.remove(parent)
-        #     except:
-        #         pass
-        evens.add(node)
-
-    # print(str(n)+"X"+str(n)+" evens: " + str(evens))
-    print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)))
 
 
 def seed():
@@ -104,4 +75,4 @@ def seed():
 
 if __name__ == '__main__':
 
-    main2()
+    main()
