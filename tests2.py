@@ -1,4 +1,5 @@
 import json
+import matplotlib.pyplot as plt
 data3 = [
     [56, 52, 5],
     [56, 51, 7],
@@ -608,6 +609,7 @@ def load(fileName):
 	with open(fileName, "r") as file:
 		jData = file.read()
 		data = json.loads(jData)
+
 		return data
 data4Dict = load("./4xN.json")
 data4 = []
@@ -615,34 +617,122 @@ for key in data4Dict.keys():
     if data4Dict[key][1]%2 == 0 and data4Dict[key][0][-1] != 0:
         data4.append(data4Dict[key][0])
 # print(data4)
-
+print("laoded")
 # sums = set([])
 # for x in data:
 #     s = sum(x)
 #     sums.add(s)
 # print(sums)
 
-for i in range(5):
-    for j in range(i+1):
-        for k in range(j+1):
-            #2x2 = (i,j)
-            wasOne = False
-            for x in data4:
-                if x[0] - i == x[3] and x[1] - j == x[3] and x[2] - k == x[3] and x[3] != 0:
-                    # print("(i,j,k): (" + str(i)+"," +str(j) + ","+str(k)+")\tx: " + str(x))
-                    wasOne = True
-                    break
-            if not wasOne:
-                print("No x for ("+str(i)+","+str(j)+ ","+str(k)+")")
-
-# for i in range(15):
+# for i in range(5):
 #     for j in range(i+1):
-#         #2x2 = (i,j)
-#         wasOne = False
-#         for x in data:
-#
-#             if x[0] - i == x[2] and x[1] - (j) == x[2] and x[2] != 0:
-#                 print("(i,j): (" + str(i)+"," +str(j) + ")\tx: " + str(x))
-#                 wasOne = True
-#         if not wasOne:
-#             print("No x for ("+str(i)+","+str(j)+")")
+#         for k in range(j+1):
+#             #2x2 = (i,j)
+#             wasOne = False
+#             for x in data4:
+#                 if x[0] - i == x[3] and x[1] - j == x[3] and x[2] - k == x[3] and x[3] != 0:
+#                     # print("(i,j,k): (" + str(i)+"," +str(j) + ","+str(k)+")\tx: " + str(x))
+#                     wasOne = True
+#                     break
+#             if not wasOne:
+#                 print("No x for ("+str(i)+","+str(j)+ ","+str(k)+")")
+
+for i in range(15):
+    for j in range(i+1):
+        #2x2 = (i,j)
+        wasOne = False
+        for x in data3:
+
+            if x[0] - i == x[2] and x[1] - (j) == x[2] and x[2] != 0:
+                print("(i,j): (" + str(i)+"," +str(j) + ")\tz: " + str(x[2])+"\tx: " + str(x))
+                wasOne = True
+        if not wasOne:
+            print("No x for ("+str(i)+","+str(j)+")")
+from mpl_toolkits.mplot3d import Axes3D
+def project(v, normal):
+    # dotProd = v[0]*normal[0]+v[1]*normal[1]+v[2]*normal[2]
+    # p2 = (v[0]-(dotProd*normal[0]), v[1]-(dotProd*normal[1]), v[2]-(dotProd*normal[2]))
+    # return p2
+    x = v[0]
+    y = v[1]
+    z = v[2]
+    new = (x-z,y-z,z-z)
+    return new
+
+def project3(data):
+    newPs = []
+    x = []
+    y = []
+    z = []
+    for point in data:
+        k = 125
+        if point[-1] == 0 or point[0] > k or point[1] > k:
+            continue
+        # p = project(point, (1,1,1))
+        # print("point: " + str(point)+"\tp: " + str(p))
+        p = point
+        newPs.append(p)
+        x.append(p[0])
+        y.append(p[1])
+        z.append(p[2])
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    # ax = fig.add_subplot(111)
+    ax.scatter(x,y,z)
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+
+    for i in range(len(x)):
+        ax.annotate(str(x[i])+","+str(y[i]), (x[i], y[i]))
+
+    ax.set_zlabel('Z Label')
+    plt.show()
+# def project2(v, normal):
+#     # dotProd = v[0]*normal[0]+v[1]*normal[1]+v[2]*normal[2]
+#     # p2 = (v[0]-(dotProd*normal[0]), v[1]-(dotProd*normal[1]), v[2]-(dotProd*normal[2]))
+#     # return p2
+#     x = v[0]
+#     y = v[1]
+#     z = v[2]
+#     new = (x-z,y-z,z-z)
+#     return new
+
+def project4(data):
+    newPs = []
+    xs = []
+    ys = []
+    zs = []
+    for point in data:
+        k = 125
+        if point[-1] == 0 or point[0] > k or point[1] > k:
+            continue
+        v = point
+        x = v[0]
+        y = v[1]
+        z = v[2]
+        w = v[3]
+        new = [x-w,y-w,z-w]
+        # p = project(point, (1,1,1))
+        # print("point: " + str(point)+"\tp: " + str(p))
+        p = new
+        newPs.append(p)
+    # project3(newPs)
+        xs.append(p[0])
+        ys.append(p[1])
+        zs.append(p[2])
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    # ax = fig.add_subplot(111)
+    ax.scatter(xs,ys,zs)
+    ax.set_xlabel('X Axis')
+    ax.set_ylabel('Y Axis')
+    ax.set_zlabel('Z Axis')
+
+
+    # for i in range(len(xs)):
+    #     ax.annotate(str(xs[i])+","+str(ys[i])+","+str(zs[i]), (xs[i], ys[i]), zs[i])
+
+    # ax.set_zlabel('Z Label')
+    plt.show()
+# project4(data4)
+# project3(data3)
