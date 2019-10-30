@@ -9,7 +9,7 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc1/")
 
-MAX_N = 13
+MAX_N = 12
 DELTA_N = 6
 
 def main():
