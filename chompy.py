@@ -2,29 +2,36 @@ import util
 from sortedcontainers import SortedSet
 import os
 from pathlib import Path
+import time
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 #THIS_FOLDER = "D:/Mass Storage/Math/chompy"
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc1/")
 
-MAX_N = 10
-DELTA_N = 1
+MAX_N = 13
+DELTA_N = 6
 
 def main():
     nevens = util.load(DATA_FOLDER / "n&evens.dat")
     n = nevens[0]
     evens = nevens[1]
-    
+    firstStartT = time.time()
+
     while n+DELTA_N <= MAX_N:
+        sT = time.time()
         evens = expand(evens, n, DELTA_N)
         n += DELTA_N
-        print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)))
         util.store((n, evens), DATA_FOLDER / "n&evens.dat")
+        endT = time.time()
+        print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
+
     if n != MAX_N:
+        sT = time.time()
         evens = expand(evens, n, MAX_N-n)
         n = MAX_N
-        print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)))
+        endT = time.time()
+        print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
         util.store((n, evens), DATA_FOLDER / "n&evens.dat")
 
 
@@ -73,5 +80,5 @@ def seed():
 
 
 if __name__ == '__main__':
-    # seed()
+    seed()
     main()

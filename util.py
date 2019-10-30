@@ -52,34 +52,6 @@ def newNodesRecReversed(n, part):
 			nodes = nodes + newNodesRec(n, part + [i])
 		return nodes
 """
-# def getParents(node, n):
-# 	parents = []
-# 	node = list(node)
-# 	for r in range(1, len(node)):
-# 		max = n
-# 		if r != 0:
-# 			max = node[r-1]
-# 		numConsecutive = 0
-# 		for i in range(len(node)):
-# 			if not r == len(node)-i:
-# 				if node[r] == node[r+i]:
-# 					numConsecutive = i
-# 			else:
-# 				break
-# 		for i in range(node[r] - max + 1):
-# 			#add the parents only increasing 1 row
-# 			n1 = node[:]
-# 			n1[r] = n1[r] + i
-# 			parents.append(n1)
-# 		for j in range(numConsecutive + 1):
-# 			#j is the number rows being added to
-# 			n2 = node[:]
-# 			for k in range(max):
-# 				#k is the number to be added
-# 				n2[r+j] = n2[r+j] + k
-# 			parents.append(n2)
-# 	#if any consecutive rows are the same, both of them can be increased by the same amount
-# 	return parents
 
 def getParentsBatch(nodes, n):
 	parents = set([])
@@ -143,6 +115,7 @@ def cleanParents(parents):
 		parent = list(parent)
 		x = len(parent) - 1
 		while x >= 0 and parent[x] == 0:
+			print("necessary?")
 			del parent[x]
 			x -= 1
 		retParents.add(tuple(parent))
@@ -211,15 +184,12 @@ def getParents(node, n):
 
 	return retParents
 
-
-
-
-	#then do up till n for node[0]
-
-
+subParents = {}
 def getParentsRec(subNode, max):
 	#subnode is a list of rows with equal vals,
 	#max is the maximum the rows can go to
+	if (tuple(subNode), max) in subParents.keys():
+		return subParents[(tuple(subNode), max)]
 
 	subNode = list(subNode)
 	parents = []
@@ -238,6 +208,8 @@ def getParentsRec(subNode, max):
 			newSecondParents = getParentsRec(subNode[1:], i)
 			for secondParent in newSecondParents:
 				parents.append([i] + secondParent)
+
+	subParents[(tuple(subNode), max)] = parents
 
 	return parents
 
