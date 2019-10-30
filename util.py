@@ -1,3 +1,6 @@
+import pickle
+import json
+
 def newNodes(n):
 	#for x(-1) in range(n)
 	#for x(-2) in range(x(-1)+1)
@@ -243,6 +246,52 @@ def getExpandParents(even, n):
 	parents = getParents(even, n)
 	return parents
 	#similar to the recursive generation of states.
+
+def getChoices(board):
+	choices = [(i, j) for i in range(len(board)) for j in range(board[i])]
+	choices = choices[1:]
+	return choices
+
+def bite(b, pos):
+	if pos[1] == 0:
+		return b[:pos[0]]
+
+	board = b[:]
+
+	for row in range(pos[0], len(board)):
+		if board[row] > pos[1]:
+			board[row] = pos[1];
+		else:
+			break
+
+	# board = [r if r > pos[1] else r for r in b]
+	return board
+
+def getChildren(state):
+	children = []
+	#print("State: " +str(state))
+	bites = getChoices(state)
+	#print("Choices: " + str(bites))
+	for b in bites:
+		child = bite(state, b)
+		#if util.getN(child) >= util.getM(child):
+		children.append(child)
+	return children
+
+def storeJson(data, fileName):
+	with open(fileName, "w") as file:
+		jData = json.dumps(data)
+		file.write(jData)
+		# file.write(str(data))
+		return 1
+
+def load(fileName):
+	with open (fileName, 'rb') as f:
+		return pickle.load(f)
+
+def store(data, fileName):
+	with open(fileName, 'wb') as f:
+		pickle.dump(data, f)
 
 """
 def mirror(board):

@@ -622,18 +622,49 @@ for key in data4Dict.keys():
 #     sums.add(s)
 # print(sums)
 
-for i in range(5):
-    for j in range(i+1):
-        for k in range(j+1):
-            #2x2 = (i,j)
-            wasOne = False
-            for x in data4:
-                if x[0] - i == x[3] and x[1] - j == x[3] and x[2] - k == x[3] and x[3] != 0:
-                    # print("(i,j,k): (" + str(i)+"," +str(j) + ","+str(k)+")\tx: " + str(x))
-                    wasOne = True
-                    break
-            if not wasOne:
-                print("No x for ("+str(i)+","+str(j)+ ","+str(k)+")")
+# for i in range(5):
+#     for j in range(i+1):
+#         for k in range(j+1):
+#             #2x2 = (i,j)
+#             wasOne = False
+#             for x in data4:
+#                 if x[0] - i == x[3] and x[1] - j == x[3] and x[2] - k == x[3] and x[3] != 0:
+#                     # print("(i,j,k): (" + str(i)+"," +str(j) + ","+str(k)+")\tx: " + str(x))
+#                     wasOne = True
+#                     break
+#             if not wasOne:
+#                 print("No x for ("+str(i)+","+str(j)+ ","+str(k)+")")
+
+evens3x = {}
+evens3y = {}
+evens3z = {}
+for node in data3:
+    if node[2] == 0:
+        continue
+    if node[0] in evens3x.keys():
+        evens3x[node[0]].append(node)
+    else:
+        evens3x[node[0]] = [node]
+
+    if node[1] in evens3y.keys():
+        evens3y[node[1]].append(node)
+    else:
+        evens3y[node[1]] = [node]
+
+    if node[2] in evens3z.keys():
+        evens3z[node[2]].append(node)
+    else:
+        evens3z[node[2]] = [node]
+# print(evens3.keys())
+prevs = 0
+for i in range(2,50):
+    # print("evens3z["+str(i)+"]: " + str(len(evens3z[i])))
+    s = 0
+    for key in range(2,i+1):
+        s += len(evens3y[key])
+    print("3x"+str(i)+" evensy: " + str(s)+"\tdiff: " + str(s-prevs))
+    prevs = s
+
 
 # for i in range(15):
 #     for j in range(i+1):
