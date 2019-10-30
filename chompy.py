@@ -1,34 +1,39 @@
 import util
 from sortedcontainers import SortedSet
-"""
-seed 1x1
+import os
+from pathlib import Path
+import time
 
-for n
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+#THIS_FOLDER = "D:/Mass Storage/Math/chompy"
+THIS_FOLDER = Path(THIS_FOLDER)
+DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc1/")
 
-add new nodes
-extend constraints
-add new constraints
-
-for all cords sorted by rho
-work constraints
-add expandable constraints to list
-add this node to evens
-del this node
-
-"""
-"""
-store: evens, expandable contraints?
-sess data: cord list
-
-"""
-
-MAX_N = 11
+MAX_N = 13
+DELTA_N = 6
 
 def main():
-    evens = seed()
+    nevens = util.load(DATA_FOLDER / "n&evens.dat")
+    n = nevens[0]
+    evens = nevens[1]
+    firstStartT = time.time()
 
-    evens = expand(evens, 2, MAX_N - 2)
-    print(str(MAX_N)+"X"+str(MAX_N)+" #evens: " + str(len(evens)))
+    while n+DELTA_N <= MAX_N:
+        sT = time.time()
+        evens = expand(evens, n, DELTA_N)
+        n += DELTA_N
+        util.store((n, evens), DATA_FOLDER / "n&evens.dat")
+        endT = time.time()
+        print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
+
+    if n != MAX_N:
+        sT = time.time()
+        evens = expand(evens, n, MAX_N-n)
+        n = MAX_N
+        endT = time.time()
+        print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
+        util.store((n, evens), DATA_FOLDER / "n&evens.dat")
+
 
 def expand(evens, initN , deltaN):
     finalN = initN + deltaN
@@ -69,10 +74,11 @@ def expand(evens, initN , deltaN):
 
 def seed():
 
-    evens = set([(1,)])
-    return evens
+    evens = (1,set([(1,)]))
+    util.store(evens, DATA_FOLDER / "n&evens.dat")
+    # return evens
 
 
 if __name__ == '__main__':
-
+    seed()
     main()

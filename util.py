@@ -49,34 +49,6 @@ def newNodesRecReversed(n, part):
 			nodes = nodes + newNodesRec(n, part + [i])
 		return nodes
 """
-# def getParents(node, n):
-# 	parents = []
-# 	node = list(node)
-# 	for r in range(1, len(node)):
-# 		max = n
-# 		if r != 0:
-# 			max = node[r-1]
-# 		numConsecutive = 0
-# 		for i in range(len(node)):
-# 			if not r == len(node)-i:
-# 				if node[r] == node[r+i]:
-# 					numConsecutive = i
-# 			else:
-# 				break
-# 		for i in range(node[r] - max + 1):
-# 			#add the parents only increasing 1 row
-# 			n1 = node[:]
-# 			n1[r] = n1[r] + i
-# 			parents.append(n1)
-# 		for j in range(numConsecutive + 1):
-# 			#j is the number rows being added to
-# 			n2 = node[:]
-# 			for k in range(max):
-# 				#k is the number to be added
-# 				n2[r+j] = n2[r+j] + k
-# 			parents.append(n2)
-# 	#if any consecutive rows are the same, both of them can be increased by the same amount
-# 	return parents
 
 def getParentsBatch(nodes, n):
 	parents = set([])
@@ -145,73 +117,6 @@ def cleanParents(parents):
 		retParents.add(tuple(parent))
 
 	return retParents
-
-def getParents(node, n):
-	node = list(node)
-	#make sure square form
-	for i in range(n-len(node)):
-		node.append(0)
-
-	parents = []
-
-	#i is the current row we are lookign at, from bottom to top
-	i = len(node) - 1
-	while i >= 0:
-		#j is index of first row with a different value
-		j = i-1
-		while j >= 0 and node[j] == node[i]:
-			j -= 1
-
-		#maxDiff is difference between next non same row and the i row
-		maxDiff = 0
-		#if j < 0 then same val as the top row so use n for maxDiff
-		if j < 0:
-			maxDiff = n - node[i]
-		else:
-			maxDiff = node[j] - node[i]
-
-		#go through each diff
-		for d in range(1, maxDiff+1):
-			#make a coppy of the node
-			baseParent = node[:]
-			#set the top of the same rows equal to its val + diff
-			baseParent[j+1] += d
-
-			#if i the only row with that val then baseparent is the only parent for this d
-			#(there are no subsequent rows to work through)
-			if j == i - 1:
-				parents.append(baseParent[:])
-			#else go through recursively all the below rows
-			else:
-				#the max the row can go to, set to n then adjusted if there is an above row
-				max = n
-				if j >= 0:
-					max = baseParent[j+1]
-				#get all the possiblites for the rows under the top row with the same value
-				subParents = getParentsRec(baseParent[j+2:i+1] , max)
-				for sub in subParents:
-					#combining the sub possiblity with the rest of the board
-					newParent = baseParent[:j+2] + sub + baseParent[i+1:]
-					parents.append(newParent)
-		#sets the next row to work on to be the row above the top same row
-		i = j
-
-
-	retParents = []
-	#clean out any zereos
-	for parent in parents:
-		x = len(parent) - 1
-		while x >= 0 and parent[x] == 0:
-			del parent[x]
-			x -= 1
-		retParents.append(tuple(parent))
-
-	return retParents
-
-
-
-
-	#then do up till n for node[0]
 
 
 def getParentsRec(subNode, max):

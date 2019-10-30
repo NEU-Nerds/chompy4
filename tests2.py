@@ -637,11 +637,36 @@ print("laoded")
 #             if not wasOne:
 #                 print("No x for ("+str(i)+","+str(j)+ ","+str(k)+")")
 
-for i in range(15):
-    for j in range(i+1):
-        #2x2 = (i,j)
-        wasOne = False
-        for x in data3:
+evens3x = {}
+evens3y = {}
+evens3z = {}
+for node in data3:
+    if node[2] == 0:
+        continue
+    if node[0] in evens3x.keys():
+        evens3x[node[0]].append(node)
+    else:
+        evens3x[node[0]] = [node]
+
+    if node[1] in evens3y.keys():
+        evens3y[node[1]].append(node)
+    else:
+        evens3y[node[1]] = [node]
+
+    if node[2] in evens3z.keys():
+        evens3z[node[2]].append(node)
+    else:
+        evens3z[node[2]] = [node]
+# print(evens3.keys())
+prevs = 0
+for i in range(2,50):
+    # print("evens3z["+str(i)+"]: " + str(len(evens3z[i])))
+    s = 0
+    for key in range(2,i+1):
+        s += len(evens3y[key])
+    print("3x"+str(i)+" evensy: " + str(s)+"\tdiff: " + str(s-prevs))
+    prevs = s
+
 
             if x[0] - i == x[2] and x[1] - (j) == x[2] and x[2] != 0:
                 print("(i,j): (" + str(i)+"," +str(j) + ")\tz: " + str(x[2])+"\tx: " + str(x))
