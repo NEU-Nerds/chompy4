@@ -285,10 +285,10 @@ def removeParents(nodes, n, c):
 
 			sqlCom += " x"+str(j+1)+" <= "+str(max)
 			sqlCom += " AND"
-			# sqlCom += " AND x"+str(i)+""
-			if i == len(node)-1:
-				sqlCom += " x"+str(i)+" >= "+str(node[-1])
-				sqlCom += " AND"
+
+			# if i == len(node)-1:
+			sqlCom += " x"+str(i)+" >= "+str(node[-1])
+			sqlCom += " AND"
 
 			for x in range(i+1, len(node)):
 				sqlCom += " x"+str(x)+" = "+str(node[x])
