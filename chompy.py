@@ -14,7 +14,7 @@ THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc1/")
 
 MAX_N = 5
-DELTA_N = 1
+DELTA_N = 6
 
 
 
@@ -44,7 +44,7 @@ def main():
     if n != MAX_N:
         sT = time.time()
 
-        util.genDB(c, n + DELTA_N)
+        util.genDB(c, MAX_N)
         conn.commit()
 
         evens = expand(evens, n, MAX_N-n)
