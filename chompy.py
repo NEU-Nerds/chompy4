@@ -13,7 +13,7 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc1/")
 
-MAX_N = 4
+MAX_N = 5
 DELTA_N = 1
 
 
@@ -84,7 +84,7 @@ def expand(evens, initN , deltaN):
         util.removeParents(nodes, n, c)
         conn.commit()
         for node in nodes:
-            evens.add(tuple(node))
+            evens.add(util.cleanNode(node))
 
 
     #get all parents of all evens and remove try to remove them from the list

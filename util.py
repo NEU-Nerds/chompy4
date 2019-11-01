@@ -140,6 +140,14 @@ def cleanParents(parents):
 
 	return retParents
 
+def cleanNode(node):
+	node = list(node)
+	x = len(node) - 1
+	while x >= 0 and node[x] == 0:
+		del node[x]
+		x -= 1
+	return tuple(node)
+
 def getParents(node, n):
 	node = list(node)
 	#make sure square form
@@ -237,36 +245,7 @@ def getExpandParents(even, n):
 	return parents
 	#similar to the recursive generation of states.
 
-def getChoices(board):
-	choices = [(i, j) for i in range(len(board)) for j in range(board[i])]
-	choices = choices[1:]
-	return choices
 
-def bite(b, pos):
-	if pos[1] == 0:
-		return b[:pos[0]]
-
-	board = b[:]
-
-	for row in range(pos[0], len(board)):
-		if board[row] > pos[1]:
-			board[row] = pos[1];
-		else:
-			break
-
-	# board = [r if r > pos[1] else r for r in b]
-	return board
-
-def getChildren(state):
-	children = []
-	#print("State: " +str(state))
-	bites = getChoices(state)
-	#print("Choices: " + str(bites))
-	for b in bites:
-		child = bite(state, b)
-		#if util.getN(child) >= util.getM(child):
-		children.append(child)
-	return children
 
 def removeParents(nodes, n, c):
 	# parents = set([])
@@ -293,7 +272,7 @@ def removeParents(nodes, n, c):
 			max = 0
 			#if j < 0 then same val as the top row so use n for maxDiff
 			if j < 0:
-				max = n# - node[i]
+				max = n# or node[i]
 			else:
 				max = node[j]# - node[i]
 			# print("max: " + str(max))
@@ -307,7 +286,7 @@ def removeParents(nodes, n, c):
 			sqlCom += " x"+str(j+1)+" <= "+str(max)
 			sqlCom += " AND"
 			# sqlCom += " AND x"+str(i)+""
-			if i == len(nodes)-1:
+			if i == len(node)-1:
 				sqlCom += " x"+str(i)+" >= "+str(node[-1])
 				sqlCom += " AND"
 
@@ -348,7 +327,36 @@ def genDB(c, m):
 		c.execute("ALTER TABLE nodes ADD x" + str(i) + " int(3);")
 
 
+def getChoices(board):
+	choices = [(i, j) for i in range(len(board)) for j in range(board[i])]
+	choices = choices[1:]
+	return choices
 
+def bite(b, pos):
+	if pos[1] == 0:
+		return b[:pos[0]]
+
+	board = b[:]
+
+	for row in range(pos[0], len(board)):
+		if board[row] > pos[1]:
+			board[row] = pos[1];
+		else:
+			break
+
+	# board = [r if r > pos[1] else r for r in b]
+	return board
+
+def getChildren(state):
+	children = []
+	#print("State: " +str(state))
+	bites = getChoices(state)
+	#print("Choices: " + str(bites))
+	for b in bites:
+		child = bite(state, b)
+		#if util.getN(child) >= util.getM(child):
+		children.append(child)
+	return children
 
 def storeJson(data, fileName):
 	with open(fileName, "w") as file:
