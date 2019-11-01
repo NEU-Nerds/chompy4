@@ -9,7 +9,7 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc1/")
 
-MAX_N = 12
+MAX_N = 5
 DELTA_N = 6
 
 def main():
@@ -25,14 +25,15 @@ def main():
         util.store((n, evens), DATA_FOLDER / "n&evens.dat")
         endT = time.time()
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
-
+        print(str(n)+"X"+str(n)+" evens: " + str(evens))
     if n != MAX_N:
         sT = time.time()
         evens = expand(evens, n, MAX_N-n)
         n = MAX_N
         endT = time.time()
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
-        util.store((n, evens), DATA_FOLDER / "n&evens.dat")
+        print(str(n)+"X"+str(n)+" evens: " + str(evens))
+    util.store((n, evens), DATA_FOLDER / "n&evens.dat")
 
 
 def expand(evens, initN , deltaN):
