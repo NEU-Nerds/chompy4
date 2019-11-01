@@ -1,19 +1,23 @@
 import pickle
 import json
+import sqlite3
+# conn = sqlite3.connect('nodes.db')
+# c = conn.cursor()
+#conn.commit()
 
 def newNodes(n):
 	#for x(-1) in range(n)
 	#for x(-2) in range(x(-1)+1)
 
-	nodes = []
+	nodes = set([])
 	#calling the rec function with all the first rows
 	for i in range(0,n+1):
-		nodes = nodes + newNodesRec(n, [i])
+		nodes.update(newNodesRec(n, [i]))
 
 	#this was here but I forgot why and commenting out didn't seem to change anything?
 	# nodes = nodes + newNodesRecReversed(n-1, [n])
 
-	retNodes = []
+	retNodes = set([])
 	#just cleaning up any 0's or empty boards, and converting to tuple
 	for node in nodes:
 		node = list(node)
@@ -25,9 +29,23 @@ def newNodes(n):
 		#making sure not empty
 		if len(node) == 0:
 			continue
-		retNodes.append(tuple(node))
+		retNodes.add(tuple(node))
 
 	return retNodes
+
+def addNodesToDB(nodes, n, c):
+	for node in nodes:
+		sqlCom = "INSERT INTO nodes VALUES (" + str(sum(node))
+		for x in range(len(node)):
+			sqlCom += ", " + str(node[x])
+		for x in range(len(node), n):
+			sqlCom += ", 0"
+		sqlCom += ");"
+		c.execute(sqlCom)
+	# c.execute("SELECT * FROM nodes")
+	# print("after Adding Nodes:" + str(c.fetchall()))
+	# print()
+
 
 def newNodesRec(n, part):
 	#break case, means part has grown to be n long (square board shape)
@@ -249,6 +267,88 @@ def getChildren(state):
 		#if util.getN(child) >= util.getM(child):
 		children.append(child)
 	return children
+
+def removeParents(nodes, n, c):
+	# parents = set([])
+	# print("removing parents")
+	for node in nodes:
+		# print("node: " + str(node))
+		node = list(node)
+		#make sure square form
+		for i in range(n-len(node)):
+			node.append(0)
+
+
+		#i is the current row we are lookign at, from bottom to top
+		i = len(node) - 1
+		while i >= 0:
+			# print("i: " + str(i))
+			#j is index of first row with a different value
+			j = i-1
+			while j >= 0 and node[j] == node[i]:
+				j -= 1
+			# print("j: " + str(j))
+
+			#maxDiff is difference between next non same row and the i row
+			max = 0
+			#if j < 0 then same val as the top row so use n for maxDiff
+			if j < 0:
+				max = n# - node[i]
+			else:
+				max = node[j]# - node[i]
+			# print("max: " + str(max))
+			sqlCom = "DELETE FROM nodes WHERE"
+			for x in range(j+1):
+
+				sqlCom += " x"+str(x)+" = "+str(node[x])
+				sqlCom += " AND"
+
+
+			sqlCom += " x"+str(j+1)+" <= "+str(max)
+			sqlCom += " AND"
+			# sqlCom += " AND x"+str(i)+""
+			if i == len(nodes)-1:
+				sqlCom += " x"+str(i)+" >= "+str(node[-1])
+				sqlCom += " AND"
+
+			for x in range(i+1, len(node)):
+				sqlCom += " x"+str(x)+" = "+str(node[x])
+				sqlCom += " AND"
+			sqlCom = sqlCom[:-4]
+			# print("sqlCom: " +str(sqlCom))
+			c.execute(sqlCom)
+
+			# c.execute("SELECT * FROM nodes")
+			# print("after removing parents:" + str(c.fetchall()))
+			# print()
+
+
+			i = j
+
+
+
+	# return cleanParents(parents)
+
+def getSigmaNodes(sigma, n, c):
+	c.execute("SELECT * FROM nodes WHERE sigma = "+str(sigma))
+	nodes = c.fetchall()
+	ret = []
+	for node in nodes:
+		ret.append(node[1:])
+	return ret
+	# pass
+
+def genDB(c, m):
+	#table name is nodes
+	# c.execute("DROP DATABASE nodesDB;")
+	# c.execute("CREATE DATABASE nodesDB;")
+	c.execute("DROP TABLE nodes")
+	c.execute("CREATE TABLE nodes(sigma int(3));")
+	for i in range(m):
+		c.execute("ALTER TABLE nodes ADD x" + str(i) + " int(3);")
+
+
+
 
 def storeJson(data, fileName):
 	with open(fileName, "w") as file:
