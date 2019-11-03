@@ -1,5 +1,6 @@
 import pickle
 import json
+from math import ceil
 
 def newNodes(n):
 	#for x(-1) in range(n)
@@ -51,6 +52,158 @@ def newNodesRecReversed(n, part):
 		for i in range(0, part[-1]+1):
 			nodes = nodes + newNodesRec(n, part + [i])
 		return nodes
+"""
+def initTree(depth, max, sigmaDict, path=[]):
+	if depth == 1:
+		ret = [True]*(max+1)
+		for x in range(max+1):
+			sigmaDict[sum(path)+x].append((ret,x,path+[x]))
+		return ret
+	tree = []
+	for i in range(max+1):
+		tree.append(initTree(depth-1, i, sigmaDict, path+[i]))
+	return tree
+
+def fillTree(nodes, tree, n):
+	for node in nodes:
+		node = list(node)
+		# addToTree(node, tree)
+		#make sure square form
+		for i in range(n-len(node)):
+			node.append(0)
+
+		# print(f"\nnode: {node}")
+		#i is the current row we are lookign at, from bottom to top
+		i = len(node) - 1
+		while i >= 0:
+			#j is index of first row with a different value
+			j = i-1
+			while j >= 0 and node[j] == node[i]:
+				j -= 1
+			# print(f"i: {i}\tj: {j}")
+			#maxDiff is difference between next non same row and the i row
+			maxDiff = 0
+			#if j < 0 then same val as the top row so use n for maxDiff
+			if j < 0:
+				maxDiff = n - node[i]
+			else:
+				maxDiff = node[j] - node[i]
+
+			#go through each diff
+			for d in range(1, maxDiff+1):
+				# print(f"d: {d}")
+				#make a coppy of the node
+				baseParent = node[:]
+				#set the top of the same rows equal to its val + diff
+				baseParent[j+1] += d
+
+				#if i the only row with that val then baseparent is the only parent for this d
+				#(there are no subsequent rows to work through)
+				if j == i - 1:
+					addToTree(baseParent, tree)
+				#else go through recursively all the below rows
+				else:
+					#the max the row can go to, set to n then adjusted if there is an above row
+					max = n
+					if j >= 0:
+						max = baseParent[j+1]
+					# print(f"max: {max}")
+					#get all the possiblites for the rows under the top row with the same value
+					subParents = getParentsRec(baseParent[j+1:i+1] , max)
+					# print(f"subParents: {subParents}")
+					for sub in subParents:
+						#combining the sub possiblity with the rest of the board
+						# print(f"\nsub: {sub}")
+						# print(f"baseParent: {baseParent}")
+						newParent = baseParent[:j+1] + sub + baseParent[i+1:]
+						addToTree(newParent, tree)
+			#sets the next row to work on to be the row above the top same row
+			i = j
+
+def addToTree(leaf, tree):
+	branch = tree
+	# print(f"\nleaf: {leaf}")
+	# print(f"tree: {tree}")
+	for item in leaf[:-1]:
+		branch = branch[item]
+		# print(f"branch: {branch}")
+	branch[leaf[-1]] = False
+
+def getSigmaEvens(tree, sigma, n, path=[]):
+	if len(path) == n-1:
+		if not (sigma >= len(tree)) and tree[sigma]:
+			return [path + [sigma]]
+		return []
+
+	ret = []
+	for i in range(min(len(tree), sigma+1)):
+		ret.extend(getSigmaEvens(tree[i], sigma-i, n, path + [i]))
+	return cleanParents(ret)
+
+def getSigmaPaths(sigma, n):
+	paths = []
+	for x in range(ceil(sigma/n), min(sigma,n)+1):
+		paths.append([x]+getSigmaPaths(sigma-x))
+	pass
+
+"""
+
+# parents = set([])
+	# print("removing parents")
+	for node in nodes:
+		# print("node: " + str(node))
+		node = list(node)
+		#make sure square form
+		for i in range(n-len(node)):
+			node.append(0)
+
+
+		#i is the current row we are lookign at, from bottom to top
+		i = len(node) - 1
+		while i >= 0:
+			# print("i: " + str(i))
+			#j is index of first row with a different value
+			j = i-1
+			while j >= 0 and node[j] == node[i]:
+				j -= 1
+			# print("j: " + str(j))
+
+			#maxDiff is difference between next non same row and the i row
+			max = 0
+			#if j < 0 then same val as the top row so use n for maxDiff
+			if j < 0:
+				max = n# or node[i]
+			else:
+				max = node[j]# - node[i]
+			# print("max: " + str(max))
+			sqlCom = "DELETE FROM nodes WHERE"
+			for x in range(j+1):
+
+				sqlCom += " x"+str(x)+" = "+str(node[x])
+				sqlCom += " AND"
+
+
+			sqlCom += " x"+str(j+1)+" <= "+str(max)
+			sqlCom += " AND"
+
+			# if i == len(node)-1:
+			sqlCom += " x"+str(i)+" >= "+str(node[-1])
+			sqlCom += " AND"
+
+			for x in range(i+1, len(node)):
+				sqlCom += " x"+str(x)+" = "+str(node[x])
+				sqlCom += " AND"
+			sqlCom = sqlCom[:-4]
+			# print("sqlCom: " +str(sqlCom))
+			c.execute(sqlCom)
+
+			# c.execute("SELECT * FROM nodes")
+			# print("after removing parents:" + str(c.fetchall()))
+			# print()
+
+
+			i = j
+
 """
 
 def getParentsBatch(nodes, n):
