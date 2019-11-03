@@ -9,10 +9,10 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc1/")
 
-MAX_N = 5
-DELTA_N = 6
+MAX_N = 12
+DELTA_N = 20
 
-def main():
+def main(MAX_N, DELTA_N):
     nevens = util.load(DATA_FOLDER / "n&evens.dat")
     n = nevens[0]
     evens = nevens[1]
@@ -71,8 +71,6 @@ def expand(evens, initN , deltaN):
         cords[key] = set([])
     return evens
 
-
-
 def seed():
 
     evens = (1,set([(1,)]))
@@ -82,4 +80,4 @@ def seed():
 
 if __name__ == '__main__':
     seed()
-    main()
+    main(MAX_N, DELTA_N)
