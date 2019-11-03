@@ -6,10 +6,7 @@ def newNodes(n):
 	#for x(-1) in range(n)
 	#for x(-2) in range(x(-1)+1)
 
-	nodes = []
-	#calling the rec function with all the first rows
-	for i in range(0,n+1):
-		nodes = nodes + newNodesRec(n, [i])
+	nodes = newNodesRec(n, [n])
 
 	#this was here but I forgot why and commenting out didn't seem to change anything?
 	# nodes = nodes + newNodesRecReversed(n-1, [n])
@@ -37,9 +34,9 @@ def newNodesRec(n, part):
 	else:
 		nodes = []
 		#go through all the possiblities for this row
-		for i in range(part[0], n+1):
+		for i in range(0, part[-1] + 1):
 			#add all the possiblities for the rest of the rows recursively
-			nodes = nodes + newNodesRec(n, [i] + part)
+			nodes = nodes + newNodesRec(n, part + [i])
 		return nodes
 
 #I thought this was necessary, now I forget why...
@@ -436,6 +433,9 @@ def load(fileName):
 def store(data, fileName):
 	with open(fileName, 'wb') as f:
 		pickle.dump(data, f)
+
+def sigma(board):
+    return sum(board)
 
 """
 def mirror(board):

@@ -13,7 +13,7 @@ DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 MAX_N = 2
 DELTA_N = 1
 
-def main():
+def main(MAX_N, DELTA_N):
     nevens = util.load(DATA_FOLDER / "n&evens.dat")
     n = nevens[0]
     evens = nevens[1]
@@ -76,8 +76,6 @@ def expand(evens, initN , deltaN):
     # print(f"sigmaDict: {sigmaDict}")
     return evens
 
-
-
 def seed():
 
     evens = (1,set([(1,)]))
@@ -87,4 +85,4 @@ def seed():
 
 if __name__ == '__main__':
     seed()
-    main()
+    main(MAX_N, DELTA_N)
