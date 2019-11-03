@@ -3,14 +3,15 @@ from sortedcontainers import SortedSet
 import os
 from pathlib import Path
 import time
+import chompTree
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 #THIS_FOLDER = "D:/Mass Storage/Math/chompy"
 THIS_FOLDER = Path(THIS_FOLDER)
-DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc1/")
+DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_N = 13
-DELTA_N = 100
+MAX_N = 2
+DELTA_N = 1
 
 def main():
     nevens = util.load(DATA_FOLDER / "n&evens.dat")
@@ -44,11 +45,12 @@ def expand(evens, initN , deltaN):
 
     n = initN + deltaN
 
-    sigmaDict = {}
-    for s in range(n*n+1):
-        sigmaDict[s] = []
+    # sigmaDict = {}
+    # for s in range(n*n+1):
+    #     sigmaDict[s] = []
 
-    tree = util.initTree(n, n, sigmaDict)
+    # tree = util.initTree(n, n, sigmaDict)
+    tree = chompTree.Tree(n)
     # print(f"sigmaDict: {sigmaDict}")
     # print(f"initEvens: {evens}")
     # print(f"tree: {tree}")
@@ -60,17 +62,17 @@ def expand(evens, initN , deltaN):
     #at some point change tree to deal with sigma
     for sigma in range(1, n*n+1):
         # newEvens = util.getSigmaEvens(tree, sigma, n)
-        newEvens = []
-        for evenT in sigmaDict[sigma]:
-            # print(f"evenT: {evenT}")
-            if evenT[0][evenT[1]]:
-                newEvens.append(evenT[2])
-        newEvens = util.cleanParents(newEvens)
+        newEvens = tree.getSigmaEvens(sigma)
+        # # for evenT in tree.sigmaDict[sigma]:
+        # #     # print(f"evenT: {evenT}")
+        # #     if evenT[0][evenT[1]]:
+        #         newEvens.append(evenT[2])
+        # newEvens = util.cleanParents(newEvens)
         # print(f"sigma {sigma} newEvens: {newEvens}")
         # print(f"newEvens: {newEvens}")
         util.fillTree(newEvens, tree, n)
         for even in newEvens:
-            evens.add(tuple(even))
+            evens.add(even.toTuple())
     # print(f"sigmaDict: {sigmaDict}")
     return evens
 

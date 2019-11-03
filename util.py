@@ -65,8 +65,9 @@ def initTree(depth, max, sigmaDict, path=[]):
 	return tree
 
 def fillTree(nodes, tree, n):
+	print("nodes: " + str(nodes))
 	for node in nodes:
-		node = list(node)
+		node = list(node.path)
 		# addToTree(node, tree)
 		#make sure square form
 		for i in range(n-len(node)):
@@ -121,13 +122,13 @@ def fillTree(nodes, tree, n):
 			i = j
 
 def addToTree(leaf, tree):
-	branch = tree
+	branch = tree.rootNode
 	# print(f"\nleaf: {leaf}")
 	# print(f"tree: {tree}")
 	for item in leaf[:-1]:
 		branch = branch[item]
 		# print(f"branch: {branch}")
-	branch[leaf[-1]] = False
+	branch[leaf[-1]].setOdd()
 
 def getSigmaEvens(tree, sigma, n, path=[]):
 	if len(path) == n-1:
@@ -146,10 +147,33 @@ def getSigmaPaths(sigma, n):
 		paths.append([x]+getSigmaPaths(sigma-x))
 	pass
 
-"""
 
-# parents = set([])
-	# print("removing parents")
+def fillTreeNext(nodes, tree, n):
+	paths = getPaths(nodes, n)
+	print(f"paths: {paths}")
+	for path in paths:
+		print(f"path: {path}")
+		cBranch = tree
+		for x in path[0]:
+			cBranch = cBranch[x]
+		print(f"cBranch: {cBranch}")
+		# cB2 = cBranch
+		branches = [cBranch]
+		for xRange in path[1]:
+			# for branch in branches:
+			# 	for x in range(xRange[0], min(len(branches),xRange[1]+1)):
+
+
+			branches = [branch[x] for branch in branches for x in range(xRange[0], min(len(branches),xRange[1]+1)) ]
+		print(f"branches: {branches}")
+		for branch in branches:
+			for x in path[2]:
+				branch = branch[x]
+			print(f"addToTree {branch}, {tree}")
+			addToTree(branch, tree)
+
+def getPaths(nodes, n):
+	paths = []
 	for node in nodes:
 		# print("node: " + str(node))
 		node = list(node)
@@ -169,42 +193,37 @@ def getSigmaPaths(sigma, n):
 			# print("j: " + str(j))
 
 			#maxDiff is difference between next non same row and the i row
-			max = 0
+			max = n
 			#if j < 0 then same val as the top row so use n for maxDiff
-			if j < 0:
-				max = n# or node[i]
-			else:
+			if j >= 0:
 				max = node[j]# - node[i]
 			# print("max: " + str(max))
-			sqlCom = "DELETE FROM nodes WHERE"
+
+			min = 0
+			if i+1 < len(node):
+				min = node[i+1]
+
+			path1 = []
 			for x in range(j+1):
-
-				sqlCom += " x"+str(x)+" = "+str(node[x])
-				sqlCom += " AND"
+				path1.append(node[x])
 
 
-			sqlCom += " x"+str(j+1)+" <= "+str(max)
-			sqlCom += " AND"
 
-			# if i == len(node)-1:
-			sqlCom += " x"+str(i)+" >= "+str(node[-1])
-			sqlCom += " AND"
 
+			path2 = []
+			#for all eqal rows
+			for x in range(j+1,i+1):
+				path2.append((min,max))
+
+
+			path3 = []
 			for x in range(i+1, len(node)):
-				sqlCom += " x"+str(x)+" = "+str(node[x])
-				sqlCom += " AND"
-			sqlCom = sqlCom[:-4]
-			# print("sqlCom: " +str(sqlCom))
-			c.execute(sqlCom)
+				path3.append(node[x])
 
-			# c.execute("SELECT * FROM nodes")
-			# print("after removing parents:" + str(c.fetchall()))
-			# print()
-
-
+			paths.append((path1,path2,path3))
 			i = j
+	return paths
 
-"""
 
 def getParentsBatch(nodes, n):
 	parents = set([])
