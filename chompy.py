@@ -3,14 +3,15 @@ from sortedcontainers import SortedSet
 import os
 from pathlib import Path
 import time
+import chompTree
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 #THIS_FOLDER = "D:/Mass Storage/Math/chompy"
 THIS_FOLDER = Path(THIS_FOLDER)
-DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc1/")
+DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_N = 12
-DELTA_N = 20
+MAX_N = 11
+DELTA_N = 144
 
 def main(MAX_N, DELTA_N):
     nevens = util.load(DATA_FOLDER / "n&evens.dat")
@@ -25,50 +26,34 @@ def main(MAX_N, DELTA_N):
         util.store((n, evens), DATA_FOLDER / "n&evens.dat")
         endT = time.time()
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
-        print(str(n)+"X"+str(n)+" evens: " + str(evens))
+        # print(str(n)+"X"+str(n)+" esvens: " + str(evens))
     if n != MAX_N:
         sT = time.time()
         evens = expand(evens, n, MAX_N-n)
         n = MAX_N
         endT = time.time()
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
-        print(str(n)+"X"+str(n)+" evens: " + str(evens))
+        # print(str(n)+"X"+str(n)+" evens: " + str(evens))
     util.store((n, evens), DATA_FOLDER / "n&evens.dat")
 
 
 def expand(evens, initN , deltaN):
-    finalN = initN + deltaN
+    """
+    Build tree from condition generations!
 
-    #initialize cords to empty sets for each possible rho
-    cords = {}
-    for i in range(1,(finalN*finalN)+1):
-        cords[i] = set([])
+    """
 
-    #get all the new nods for (initN, finalN]
-    newNodes = []
-    for n in range(initN, finalN+1):
-        newNodes = newNodes + util.newNodes(n)
-    #add new nodes to cords
-    for node in newNodes:
-        cords[sum(node)].add(node)
+    n = initN + deltaN
+    tree = chompTree.Tree(n)
 
-    #get all parents of all evens and remove try to remove them from the list
-    evenParents = util.getParentsBatch(evens, n)
-    for parent in evenParents:
-        cords[sum(parent)].discard(parent)
+    #iterate through tree starting with lowest sigma and fillTree with that node
+    #at some point change tree to deal with sigma
+    for sigma in range(1, n*n+1):
+        newEvens = tree.getSigmaEvens(sigma)
+        util.fillTree(newEvens, tree, n)
+        for even in newEvens:
+            evens.add(even.toTuple())
 
-    for key in cords.keys():
-        if len(cords[key]) == 0:
-            continue
-
-        parents = util.getParentsBatch(cords[key], n)
-        for parent in parents:
-            cords[sum(parent)].discard(parent)
-
-        for node in cords[key]:
-            evens.add(node)
-
-        cords[key] = set([])
     return evens
 
 def seed():
