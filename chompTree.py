@@ -1,4 +1,16 @@
 
+"""
+treeTrim changes:
+default evens = None
+when a node is marked as even, delete all its leaves
+(need recursive __del__ function)
+Keep a dict of unevaluated nodes
+once marked as false, remove from sigmaNodes, pathNodes, del path, del sigma,
+   make it "inert"
+
+Parent representation in terms of tree?
+
+"""
 class Tree():
     rootNode = None
     sigmaNodes = {}
