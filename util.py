@@ -40,22 +40,28 @@ def newNodesRec(n, part):
 		return nodes
 
 
-def initTree(depth, max, sigmaDict, path=[]):
-	if depth == 1:
-		ret = [True]*(max+1)
-		for x in range(max+1):
-			sigmaDict[sum(path)+x].append((ret,x,path+[x]))
-		return ret
-	tree = []
-	for i in range(max+1):
-		tree.append(initTree(depth-1, i, sigmaDict, path+[i]))
-	return tree
+# def initTree(depth, max, sigmaDict, path=[]):
+# 	if depth == 1:
+# 		ret = [True]*(max+1)
+# 		for x in range(max+1):
+# 			sigmaDict[sum(path)+x].append((ret,x,path+[x]))
+# 		return ret
+# 	tree = []
+# 	for i in range(max+1):
+# 		tree.append(initTree(depth-1, i, sigmaDict, path+[i]))
+# 	return tree
+
+
 
 def fillTree(nodes, tree, n):
-
+	# print("fillTree Nodes: "  +str(nodes))
 	for nodeObj in nodes.copy():
-		node = list(nodeObj.path)
 
+		if type(nodeObj) != tuple and type(nodeObj) != list:
+			 node = list(nodeObj.path)
+		else:
+			node = list(nodeObj)
+		# print(f"filling from {node}")
 		#make sure square form
 		for i in range(n-len(node)):
 			node.append(0)
@@ -89,7 +95,8 @@ def fillTree(nodes, tree, n):
 				#(there are no subsequent rows to work through)
 				if j == i - 1:
 					# print("parent: " + str(baseParent))
-					addToTree(baseParent, tree)
+					# print("addingB: " +str(baseParent))
+					setOdd(baseParent, tree)
 				#else go through recursively all the below rows
 				else:
 					#the max the row can go to, set to n then adjusted if there is an above row
@@ -102,17 +109,22 @@ def fillTree(nodes, tree, n):
 					for sub in subParents:
 						#combining the sub possiblity with the rest of the board
 						newParent = baseParent[:j+1] + sub + baseParent[i+1:]
-
-						addToTree(newParent, tree)
+						# print("addingN: " +str(newParent))
+						# print("")
+						setOdd(newParent, tree)
 			#sets the next row to work on to be the row above the top same row
 			i = j
 
 
-def addToTree(path, tree):
+def setOdd(path, tree):
 	if path[-1] == 0:
 		path = cleanPath(path)
-	tree.getNode(tuple(path)).setOdd()
-
+	# print(f"setOdd cleaned Path: {path}" )
+	try:
+		tree.getNode(tuple(path)).setOdd()
+	except:
+		# print("exception for path: " + str(path))
+		pass
 # def getSigmaEvens(tree, sigma, n, path=[]):
 # 	if len(path) == n-1:
 # 		if not (sigma >= len(tree)) and tree[sigma]:
