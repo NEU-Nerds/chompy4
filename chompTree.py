@@ -133,8 +133,11 @@ class Node():
             self.even = True
             self.parentTree.sigmaUnchecked[self.sigma].remove(self)
             # self.parentTree.maxDepthNodes.pop()
-            for leaf in self.leaves:
-                del leaf
+            for leafD in self.leaves:
+                print(leafD.path)
+                # print(f"del leaf {leafD}")
+                leafD.delManual()
+                del leafD
             self.leaves.clear()
             # del self.leaves
             # for leaf in self.leaves:
@@ -155,10 +158,40 @@ class Node():
         else:
             return str([l.forStr() for l in self.leaves])
 
-    def __del__(self):
-        #means it was odd
-        ## TODO:
-        # self.delManual()
+    def delManual(self):
+        #fucking nuke this thing to the astral sea
+        for leaf in self.leaves:
+            try:
+                leaf.delManual()
+                del leaf
+            except:
+                # print("except1")
+                pass
+        try:
+            del self.parentTree.pathNodes[self.path]
+
+        except:
+            # print("except2")
+            pass
+        try:
+            del self.parentTree.sigmaUnchecked[self]
+        except:
+            # print("except3")
+            pass
+        if self.leaf:
+            self.parentTree.maxDepthNodes.remove(self)
+
+        del self.path
+        del self.sigma
+        # del self.sigmaUnchecked
+        # del self.even
+        self.leaves.clear()
+        del self.parentTree
+        # del self.leaf
+
+
+    def __delete__(self):
+        #fucking nuke this thing to the astral sea
         for leaf in self.leaves:
             try:
                 del leaf
@@ -187,9 +220,6 @@ class Node():
         del self.parentTree
         # del self.leaf
         pass
-
-    # def delManual(self):
-    #     #fucking nuke this thing to the astral sea
 
 
     def forStr(self):

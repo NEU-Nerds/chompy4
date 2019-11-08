@@ -10,8 +10,8 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_N = 11
-DELTA_N = 3
+MAX_N = 6
+DELTA_N = 1
 
 def main(MAX_N, DELTA_N):
     nevens = util.load(DATA_FOLDER / "n&evens.dat")
@@ -26,14 +26,14 @@ def main(MAX_N, DELTA_N):
         util.store((n, evens), DATA_FOLDER / "n&evens.dat")
         endT = time.time()
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
-        # print(str(n)+"X"+str(n)+" evens: " + str(evens))
+        print(str(n)+"X"+str(n)+" evens: " + str(evens))
     if n != MAX_N:
         sT = time.time()
         evens, tree = expand(evens, tree, n, MAX_N-n)
         n = MAX_N
         endT = time.time()
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
-        # print(str(n)+"X"+str(n)+" evens: " + str(evens))
+        print(str(n)+"X"+str(n)+" evens: " + str(evens))
     util.store((n, evens), DATA_FOLDER / "n&evens.dat")
 
 
@@ -61,7 +61,7 @@ def expand(evens, tree, initN , deltaN):
 
         util.fillTree(newEvens, tree, n)
         for even in newEvens.copy():
-            # print("even: " + str(even.__repr__()))
+            print("even: " + str(even.__repr__()))
             # try:
             even.setEven()
             # print("setEven")
