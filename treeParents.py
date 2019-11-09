@@ -1,4 +1,11 @@
+import util
+
+def getParents(treeNode):
+
+
 """
+no need to return parents!!, just set them odd
+
 1. all of the leaves of the node will be its parents (all the way to max depth)
 2. all other parents of the node will be on the same depth as the node
 
@@ -45,9 +52,6 @@ while 'unchecked' is not empty:
             if nextNode is not traversed:
                 add nextNode to 'unchecked'
                 set nextNode's traversed to true
-
-
-
 many of the parents will be easy
 the hard ones are when the node has consecutive rows that have the same value
 

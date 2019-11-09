@@ -10,8 +10,8 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_N = 11
-DELTA_N = 3
+MAX_N = 5
+DELTA_N = 1
 
 def main(MAX_N, DELTA_N):
     nevens = util.load(DATA_FOLDER / "n&evens.dat")
@@ -20,22 +20,20 @@ def main(MAX_N, DELTA_N):
     evens = nevens[1]
     firstStartT = time.time()
     while n+DELTA_N <= MAX_N:
-        sT = time.time()
-        evens, tree = expand(evens, tree, n, DELTA_N)
-        n += DELTA_N
-        util.store((n, evens), DATA_FOLDER / "n&evens.dat")
-        endT = time.time()
-        print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
-        # print(str(n)+"X"+str(n)+" evens: " + str(evens))
+        expandWrapper(DELTA_N, n+DELTA_N)
+    #if the difference between starting n and MAX_N is not a multiple of DELTA_N, we have to do this:
     if n != MAX_N:
-        sT = time.time()
-        evens, tree = expand(evens, tree, n, MAX_N-n)
-        n = MAX_N
-        endT = time.time()
-        print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
-        # print(str(n)+"X"+str(n)+" evens: " + str(evens))
+        expandWrapper(MAX_N-n, MAX_N)
     util.store((n, evens), DATA_FOLDER / "n&evens.dat")
 
+def expandWrapper(deltaN, newN):
+    sT = time.time()
+    evens, tree = expand(evens, tree, n, DELTA_N)
+    n = newN
+    util.store((n, evens), DATA_FOLDER / "n&evens.dat")
+    endT = time.time()
+    print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
+    print(str(n)+"X"+str(n)+" evens: " + str(evens))
 
 def expand(evens, tree, initN , deltaN):
     """
