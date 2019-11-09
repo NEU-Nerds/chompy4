@@ -38,11 +38,9 @@ def main(MAX_N, DELTA_N):
         print(str(n)+"X"+str(n)+" evens: " + str(evens))
     util.store((n, evens), DATA_FOLDER / "n&evens.dat")
 
-
 def expand(evens, tree, initN , deltaN):
     """
     Build tree from condition generations!
-
     """
 
     n = initN + deltaN
