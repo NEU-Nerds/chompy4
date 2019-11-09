@@ -24,6 +24,7 @@ def main(MAX_N, DELTA_N):
         evens, tree = expand(evens, tree, n, DELTA_N)
         n += DELTA_N
         util.store((n, evens), DATA_FOLDER / "n&evens.dat")
+        util.store(tree, DATA_FOLDER / "tree.dat")
         endT = time.time()
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
         # print(str(n)+"X"+str(n)+" evens: " + str(evens))
@@ -32,6 +33,7 @@ def main(MAX_N, DELTA_N):
         evens, tree = expand(evens, tree, n, MAX_N-n)
         n = MAX_N
         util.store((n, evens), DATA_FOLDER / "n&evens.dat")
+        util.store(tree, DATA_FOLDER / "tree.dat")
         endT = time.time()
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
         # print(str(n)+"X"+str(n)+" evens: " + str(evens))
