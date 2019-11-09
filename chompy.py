@@ -10,7 +10,7 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_N = 6
+MAX_N = 3
 DELTA_N = 1
 
 def main(MAX_N, DELTA_N):
@@ -58,10 +58,12 @@ def expand(evens, tree, initN , deltaN):
     for sigma in range(1, n*n+1):
         # print(f"\nsigma {sigma}")
         newEvens = tree.getSigmaUnchecked(sigma)
-
+        # if n >= 5:
+        #     if tree.getNode((3,3,3,3,2)) in newEvens:
+        #         print(f"IT'S FUCKING THERE :{sigma}")
         util.fillTree(newEvens, tree, n)
         for even in newEvens.copy():
-            print("even: " + str(even.__repr__()))
+            # print("even: " + str(even.__repr__()))
             # try:
             even.setEven()
             # print("setEven")

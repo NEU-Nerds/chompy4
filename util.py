@@ -61,7 +61,7 @@ def fillTree(nodes, tree, n):
 			 node = list(nodeObj.path)
 		else:
 			node = list(nodeObj)
-		print(f"filling from {node}")
+		# print(f"filling from {node}")
 		#make sure square form
 		for i in range(n-len(node)):
 			node.append(0)

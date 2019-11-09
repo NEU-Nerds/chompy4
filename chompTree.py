@@ -68,11 +68,11 @@ class Tree():
         #expand existing nodes to maxDepth
         # print("maxDepthNodes: " + str(self.maxDepthNodes))
         for node in self.maxDepthNodes.copy():
-            if node.even:
+            if node.even or len(node.path) != n:
                 continue
             # print("Expanding node: "+str(node) )
             # oldMaxNodes.add(node)
-
+            # print(f"Expanding node: {node} in n: {n}")
             node.expand(n-initN, self.sigmaUnchecked)
 
         #add new subTrees
@@ -124,9 +124,12 @@ class Node():
         self.leaf = False
 
     def setOdd(self):
+        # print(f"setOddInternal on {self.path} sigma: {self.sigma}")
         if self.even is None:
+            # print("Even was None")
             self.even = False
             self.parentTree.sigmaUnchecked[self.sigma].remove(self)
+            # print("If its in unchecked after: " + str(self in self.parentTree.sigmaUnchecked[self.sigma]))
 
     def setEven(self):
         if self.even is None:
@@ -134,7 +137,7 @@ class Node():
             self.parentTree.sigmaUnchecked[self.sigma].remove(self)
             # self.parentTree.maxDepthNodes.pop()
             for leafD in self.leaves:
-                print(leafD.path)
+                # print(leafD.path)
                 # print(f"del leaf {leafD}")
                 leafD.delManual()
                 del leafD
