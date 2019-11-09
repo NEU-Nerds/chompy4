@@ -68,7 +68,7 @@ class Tree():
         #expand existing nodes to maxDepth
         # print("maxDepthNodes: " + str(self.maxDepthNodes))
         for node in self.maxDepthNodes.copy():
-            if node.even or len(node.path) != n:
+            if node.even or len(node.path) < initN:
                 continue
             # print("Expanding node: "+str(node) )
             # oldMaxNodes.add(node)
@@ -128,9 +128,11 @@ class Node():
         if self.even is None:
             # print("Even was None")
             self.even = False
-            self.parentTree.sigmaUnchecked[self.sigma].remove(self)
+            # self.parentTree.sigmaUnchecked[self.sigma].remove(self)
+            self.removeFromSigmaUnchecked()
             # print("If its in unchecked after: " + str(self in self.parentTree.sigmaUnchecked[self.sigma]))
-
+    def removeFromSigmaUnchecked(self):
+        self.parentTree.sigmaUnchecked[self.sigma].remove(self)
     def setEven(self):
         if self.even is None:
             self.even = True
