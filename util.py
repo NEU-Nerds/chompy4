@@ -37,10 +37,10 @@ def fillTree(nodes, tree, n):
 
 	for nodeObj in nodes.copy():
 
-		if type(nodeObj) != tuple and type(nodeObj) != list:
-			 node = list(nodeObj.path)
-		else:
-			node = list(nodeObj)
+		# if type(nodeObj) != tuple and type(nodeObj) != list:
+		node = list(nodeObj.path)
+		# else:
+		# 	node = list(nodeObj)
 
 		#make sure square form
 		for i in range(n-len(node)):

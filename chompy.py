@@ -11,7 +11,7 @@ THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
 MAX_N = 11
-DELTA_N = 2
+DELTA_N = 1
 
 def main(MAX_N, DELTA_N):
     nevens = util.load(DATA_FOLDER / "n&evens.dat")
@@ -56,15 +56,15 @@ def expand(evens, tree, initN , deltaN):
 
         for even in newEvens.copy():
             even.setEven()
-            evens.add(even.toTuple())
+            evens.add(even)
 
     return evens, tree
 
 def seed():
 
-    evens = (1,set([(1,)]))
-    util.store(evens, DATA_FOLDER / "n&evens.dat")
     tree = chompTree.Tree(1)
+    evens = (1,set([tree.getNode((1,))]))
+    util.store(evens, DATA_FOLDER / "n&evens.dat")
     util.fillTree([tree.getNode((1,))], tree, 1)
     tree.getNode((1,)).setEven()
 
