@@ -1,7 +1,11 @@
 import util
 
 def getParents(treeNode):
+	#all the leaves of a node will be its parents, but we don't have to worry about these
+	#b/c the only nodes being passed in here will be even, and they won't have any leaves
 
+	#branchmates with # > than node are parents
+	treeNode
 
 """
 no need to return parents!!, just set them odd
