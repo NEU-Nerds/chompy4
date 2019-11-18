@@ -21,7 +21,7 @@ class Tree():
         for s in range(n*n+1):
             self.sigmaUnchecked[s] = set([])
         self.maxDepthNodes = set([])
-        self.rootNode = Node(n,n, self)
+        self.rootNode = Node(n,n, self, None)
 
     def getSigmaUnchecked(self,sigma):
         return self.sigmaUnchecked[sigma]
@@ -51,7 +51,7 @@ class Tree():
 
         #add new subTrees
         for x in range(initN + 1, n+1):
-            newNode = Node(x, n-1, self, [x])
+            newNode = Node(x, n-1, self, self.rootNode, [x])
             self.rootNode.leaves.append(newNode)
 
 class Node():
@@ -59,32 +59,48 @@ class Node():
     sigma = 0
     parentTree = None
     even = None
+    branchNode = None
     leaves = []
     leaf = False
+    # fullyChecked = False
+    uncheckedLeaves = None
 
 
-    def __init__(self, max, depth, parentTreeIn, inPath = []):
+    def __init__(self, max, depth, parentTreeIn, branchNode, inPath = []):
         self.parentTree = parentTreeIn
         if depth > 0:
-            self.leaves = [Node(x,depth-1, parentTreeIn, inPath + [x]) for x in range(1,max+1)]
+            self.leaves = [Node(x,depth-1, parentTreeIn, self, inPath + [x]) for x in range(1,max+1)]
+            self.uncheckedLeaves = max
         else:
             self.parentTree.maxDepthNodes.add(self)
             self.leaf = True
+            self.uncheckedLeaves = 0
 
         self.path = tuple(inPath)
         self.sigma = sum(inPath)
+        self.branchNode = branchNode
 
         self.parentTree.pathNodes[self.path] = self
         self.parentTree.sigmaUnchecked[self.sigma].add(self)
 
     def expand(self, depth, sigmaUnchecked):
-        self.leaves = [Node(x,depth-1, self.parentTree, list(self.path) + [x]) for x in range(1,self.path[-1]+1)]
+        self.leaves = [Node(x,depth-1, self.parentTree, self, list(self.path) + [x]) for x in range(1,self.path[-1]+1)]
         self.leaf = False
 
     def setOdd(self):
         if self.even is None:
             self.even = False
             self.removeFromSigmaUnchecked()
+
+            if self.leaf:
+                self.branchNode.decreaseChecked()
+            if self.uncheckedLeaves == 0:
+                self.branchNode.decreaseChecked()
+
+    def decreaseChecked(self):
+        self.uncheckedLeaves -= 1
+        if self.uncheckedLeaves == 0 and self.even is not None:
+            self.branchNode.decreaseChecked()
 
     def removeFromSigmaUnchecked(self):
         self.parentTree.sigmaUnchecked[self.sigma].remove(self)
@@ -93,10 +109,14 @@ class Node():
         if self.even is None:
             self.even = True
             self.parentTree.sigmaUnchecked[self.sigma].remove(self)
+
             for leafD in self.leaves:
                 leafD.delManual()
                 del leafD
             self.leaves.clear()
+
+            self.uncheckedLeaves = 0
+            self.branchNode.decreaseChecked()
 
         else:
             print("Resetting an node to be even when it's already been set as " + str(self.even))

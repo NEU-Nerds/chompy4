@@ -10,7 +10,7 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_N = 11
+MAX_N = 10
 DELTA_N = 1
 
 def main(MAX_N, DELTA_N):
@@ -26,7 +26,7 @@ def main(MAX_N, DELTA_N):
         util.store((n, evens), DATA_FOLDER / "n&evens.dat")
         endT = time.time()
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
-        print(str(n)+"X"+str(n)+" evens: " + str(evens))
+        # print(str(n)+"X"+str(n)+" evens: " + str(evens))
     #if the difference between starting n and MAX_N is not a multiple of DELTA_N, we have to do this:
     if n != MAX_N:
         sT = time.time()
@@ -35,13 +35,14 @@ def main(MAX_N, DELTA_N):
         util.store((n, evens), DATA_FOLDER / "n&evens.dat")
         endT = time.time()
         print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
-        print(str(n)+"X"+str(n)+" evens: " + str(evens))
+        # print(str(n)+"X"+str(n)+" evens: " + str(evens))
     util.store((n, evens), DATA_FOLDER / "n&evens.dat")
 
 def expand(evens, tree, initN , deltaN):
     """
     Build tree from condition generations!
     """
+    # print("inEvens: " + str(evens))
 
     n = initN + deltaN
     # tree = chompTree.Tree(n)
@@ -49,6 +50,7 @@ def expand(evens, tree, initN , deltaN):
     # print("\nExpanding")
     # print("Pre Expansion PathNodes: " + str(tree.pathNodes))
     tree.expandTree(initN, n)
+    # util.transverseParents(evens, tree)
     util.fillTree(evens, tree, n)
     # print("Expanded")
     # print("Expanded PathNodes: " + str(tree.pathNodes))
@@ -62,6 +64,7 @@ def expand(evens, tree, initN , deltaN):
         #     if tree.getNode((3,3,3,3,2)) in newEvens:
         #         print(f"IT'S FUCKING THERE :{sigma}")
         util.fillTree(newEvens, tree, n)
+        # util.transverseParents(newEvens, tree)
         for even in newEvens.copy():
             # print("even: " + str(even.__repr__()))
             # try:
@@ -69,20 +72,22 @@ def expand(evens, tree, initN , deltaN):
             # print("setEven")
             # except:
                 # print(f"\n\texcepted while trying to set even for {even}\n")
-            evens.add(even.toTuple())
+            evens.add(even)
             # print("added to evens")
 
     return evens, tree
 
 def seed():
 
-    evens = (1,set([(1,)]))
-    util.store(evens, DATA_FOLDER / "n&evens.dat")
+
+
     tree = chompTree.Tree(1)
     util.fillTree([tree.getNode((1,))], tree, 1)
     tree.getNode((1,)).setEven()
-    # print("TREEE")
-    # print(tree)
+
+    n_evens = (1,set([tree.getNode((1,))]))
+
+    util.store(n_evens, DATA_FOLDER / "n&evens.dat")
     util.store(tree, DATA_FOLDER / "tree.dat")
     # return evens
 

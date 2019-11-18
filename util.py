@@ -87,7 +87,45 @@ def fillTree(nodes, tree, n):
 						setOdd(newParent, tree)
 			#sets the next row to work on to be the row above the top same row
 			i = j
+"""
+THIS WAS ACTUALLY CHILDREN
+def transverseParents(nodes, tree):
+	#set left branchMates
+	#reccursively go up?
 
+	#nodes.copy()?
+
+	for node in nodes.copy():
+		print(f"transversing {node}")
+		#node is object
+
+		#all left sibs
+		for sib in node.branchNode.leaves[:node.path[-1]]:
+			sib.setOdd()
+		recNode = node.branchNode
+		while len(recNode.path) >= 1: #is not None:
+			#direct branchParents
+			print(f"settingRecNode odd {recNode}")
+			setNodeOdd(recNode, tree)
+			#the rest
+			for i in range(1, node.path[len(recNode.path)-1]):
+				subRecNode = recNode[i]
+				encounteredLeaf = False
+				while len(subRecNode.path) < len(node.path):
+					if subRecNode.leaf:
+						encounteredLeaf = True
+						break
+					print("index: " + str(min(node.path[len(subRecNode.path)],i)) )
+					print(f"path: {subRecNode.path}")
+					subRecNode = subRecNode[min(node.path[len(subRecNode.path)],i)]
+				if encounteredLeaf:
+					print("continueing")
+					continue
+				print(f"settingSubRecNode odd {subRecNode}")
+				setNodeOdd(subRecNode, tree)
+
+			recNode = recNode.branchNode
+"""
 
 def setOdd(path, tree):
 	if path[-1] == 0:
@@ -98,6 +136,12 @@ def setOdd(path, tree):
 	except:
 		pass
 		# print("exception for path: " + str(path))
+
+def setNodeOdd(node, tree):
+	try:
+		tree.getNode(tuple(path)).setOdd()
+	except:
+		pass
 
 def cleanPath(path):
 	path = list(path)
