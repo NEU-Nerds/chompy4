@@ -12,196 +12,201 @@ Parent representation in terms of tree?
 
 """
 class Tree():
-    rootNode = None
-    sigmaUnchecked = {}
-    maxDepthNodes = None
+	rootNode = None
+	sigmaUnchecked = {}
+	maxDepthNodes = None
 
-    pathNodes = {}
-    def __init__(self, n):
-        for s in range(n*n+1):
-            self.sigmaUnchecked[s] = set([])
-        self.maxDepthNodes = set([])
-        self.rootNode = Node(n,n, self, None)
+	pathNodes = {}
+	def __init__(self, n):
+		for s in range(n*n+1):
+			self.sigmaUnchecked[s] = set([])
+		self.maxDepthNodes = set([])
+		self.rootNode = Node(n,n, self, None)
 
-    def getSigmaUnchecked(self,sigma):
-        return self.sigmaUnchecked[sigma]
+	def getSigmaUnchecked(self,sigma):
+		return self.sigmaUnchecked[sigma]
 
-    def getNode(self, path):
-        return self.pathNodes[path]
+	def getNode(self, path):
+		return self.pathNodes[path]
 
-    def __getitem__(self,index):
-        return self.rootNode[index]
+	def __getitem__(self,index):
+		return self.rootNode[index]
 
-    def __repr__(self):
-        return self.rootNode.__repr__()
+	def __repr__(self):
+		return self.rootNode.__repr__()
 
-    def __str__(self):
-        return self.rootNode.__str__()
+	def __str__(self):
+		return self.rootNode.__str__()
 
-    def expandTree(self, initN, n):
-        #expand and clear(should already be) sigmaUnchecked
-        for s in range(n*n+1):
-            self.sigmaUnchecked[s] = set([])
+	def expandTree(self, initN, n):
+		#expand and clear(should already be) sigmaUnchecked
+		for s in range(n*n+1):
+			self.sigmaUnchecked[s] = set([])
 
-        #expand existing nodes to maxDepth
-        for node in self.maxDepthNodes.copy():
-            if node.even or len(node.path) < initN:
-                continue
-            node.expand(n-initN, self.sigmaUnchecked)
+		#expand existing nodes to maxDepth
+		for node in self.maxDepthNodes.copy():
+			if node.even or len(node.path) < initN:
+				continue
+			node.expand(n-initN, self.sigmaUnchecked)
 
-        #add new subTrees
-        for x in range(initN + 1, n+1):
-            newNode = Node(x, n-1, self, self.rootNode, [x])
-            self.rootNode.leaves.append(newNode)
+		#add new subTrees
+		for x in range(initN + 1, n+1):
+			newNode = Node(x, n-1, self, self.rootNode, [x])
+			self.rootNode.leaves.append(newNode)
 
 class Node():
-    path = None
-    sigma = 0
-    parentTree = None
-    even = None
-    branchNode = None
-    leaves = []
-    leaf = False
-    # fullyChecked = False
-    uncheckedLeaves = None
+	path = None#tuple of the numbers chosen as the path to get to this point
+	sigma = 0#the sum of this node's path
+	parentTree = None#the pointer to the whole tree
+	even = None
+	branchNode = None#the parent node of this node
+	leaves = []
+	leaf = False#is this node at max depth
+	# fullyChecked = False
+	uncheckedLeaves = None#the number of unchecked leaves (inc. indirect leaves) remaining for this node
+	# traversed = None
+
+	def __init__(self, max, depth, parentTreeIn, branchNode, inPath = []):
+		self.parentTree = parentTreeIn
+		if depth > 0:
+			self.leaves = [Node(x,depth-1, parentTreeIn, self, inPath + [x]) for x in range(1,max+1)]
+			self.uncheckedLeaves = max
+		else:
+			self.parentTree.maxDepthNodes.add(self)
+			self.leaf = True
+			self.uncheckedLeaves = 0
+
+		self.path = tuple(inPath)
+		self.sigma = sum(inPath)
+		self.branchNode = branchNode
+
+		self.parentTree.pathNodes[self.path] = self
+		self.parentTree.sigmaUnchecked[self.sigma].add(self)
+		self.traversed = False
+
+	def expand(self, depth, sigmaUnchecked):
+		self.leaves = [Node(x,depth-1, self.parentTree, self, list(self.path) + [x]) for x in range(1,self.path[-1]+1)]
+		self.leaf = False
+
+	def setOdd(self):
+		if self.even is None:
+			self.even = False
+			self.removeFromSigmaUnchecked()
+
+			if self.leaf:
+				self.branchNode.decreaseChecked()
+			if self.uncheckedLeaves == 0:
+				self.branchNode.decreaseChecked()
+
+	def decreaseChecked(self):
+		self.uncheckedLeaves -= 1
+		if self.uncheckedLeaves == 0 and self.even is not None:
+			self.branchNode.decreaseChecked()
+
+	def removeFromSigmaUnchecked(self):
+		self.parentTree.sigmaUnchecked[self.sigma].remove(self)
+
+	def setEven(self):
+		if self.even is None:
+			self.even = True
+			self.parentTree.sigmaUnchecked[self.sigma].remove(self)
+
+			for leafD in self.leaves:
+				leafD.delManual()
+				del leafD
+			self.leaves.clear()
+
+			self.uncheckedLeaves = 0
+			self.branchNode.decreaseChecked()
+
+		else:
+			print("Resetting an node to be even when it's already been set as " + str(self.even))
+
+	def __repr__(self):
+		return str(self.path)
+
+	def __str__(self):
+		return str(self.path)
+
+		if self.leaf:
+			return str(self.even)
+		else:
+			return str([l.forStr() for l in self.leaves])
+
+	def delManual(self):
+		#fucking nuke this thing to the astral sea
+		for leaf in self.leaves:
+			try:
+				leaf.delManual()
+				del leaf
+			except:
+				# print("except1")
+				pass
+		try:
+			del self.parentTree.pathNodes[self.path]
+
+		except:
+			# print("except2")
+			pass
+		try:
+			del self.parentTree.sigmaUnchecked[self]
+		except:
+			# print("except3")
+			pass
+		if self.leaf:
+			self.parentTree.maxDepthNodes.remove(self)
+
+		del self.path
+		del self.sigma
+		self.leaves.clear()
+		del self.parentTree
 
 
-    def __init__(self, max, depth, parentTreeIn, branchNode, inPath = []):
-        self.parentTree = parentTreeIn
-        if depth > 0:
-            self.leaves = [Node(x,depth-1, parentTreeIn, self, inPath + [x]) for x in range(1,max+1)]
-            self.uncheckedLeaves = max
-        else:
-            self.parentTree.maxDepthNodes.add(self)
-            self.leaf = True
-            self.uncheckedLeaves = 0
+	def __delete__(self):
+		#fucking nuke this thing to the astral sea
+		for leaf in self.leaves:
+			try:
+				del leaf
+			except:
+				# print("except1")
+				pass
+		try:
+			del self.parentTree.pathNodes[self.path]
 
-        self.path = tuple(inPath)
-        self.sigma = sum(inPath)
-        self.branchNode = branchNode
+		except:
+			# print("except2")
+			pass
+		try:
+			del self.parentTree.sigmaUnchecked[self]
+		except:
+			# print("except3")
+			pass
+		if self.leaf:
+			self.parentTree.maxDepthNodes.remove(self)
 
-        self.parentTree.pathNodes[self.path] = self
-        self.parentTree.sigmaUnchecked[self.sigma].add(self)
+		del self.path
+		del self.sigma
+		self.leaves.clear()
+		del self.parentTree
+		pass
 
-    def expand(self, depth, sigmaUnchecked):
-        self.leaves = [Node(x,depth-1, self.parentTree, self, list(self.path) + [x]) for x in range(1,self.path[-1]+1)]
-        self.leaf = False
+	def forStr(self):
+		if self.leaf:
+			return self.even
+		else:
+			return [l.forStr() for l in self.leaves]
 
-    def setOdd(self):
-        if self.even is None:
-            self.even = False
-            self.removeFromSigmaUnchecked()
+	def toTuple(self):
+		return tuple(self.path)
 
-            if self.leaf:
-                self.branchNode.decreaseChecked()
-            if self.uncheckedLeaves == 0:
-                self.branchNode.decreaseChecked()
+	def __getitem__(self,index):
+		#only becuase 0's were being used previously
+		if index == 0:
+			return self
+		return self.leaves[index-1]
 
-    def decreaseChecked(self):
-        self.uncheckedLeaves -= 1
-        if self.uncheckedLeaves == 0 and self.even is not None:
-            self.branchNode.decreaseChecked()
-
-    def removeFromSigmaUnchecked(self):
-        self.parentTree.sigmaUnchecked[self.sigma].remove(self)
-
-    def setEven(self):
-        if self.even is None:
-            self.even = True
-            self.parentTree.sigmaUnchecked[self.sigma].remove(self)
-
-            for leafD in self.leaves:
-                leafD.delManual()
-                del leafD
-            self.leaves.clear()
-
-            self.uncheckedLeaves = 0
-            self.branchNode.decreaseChecked()
-
-        else:
-            print("Resetting an node to be even when it's already been set as " + str(self.even))
-
-    def __repr__(self):
-        return str(self.path)
-
-    def __str__(self):
-        return str(self.path)
-
-        if self.leaf:
-            return str(self.even)
-        else:
-            return str([l.forStr() for l in self.leaves])
-
-    def delManual(self):
-        #fucking nuke this thing to the astral sea
-        for leaf in self.leaves:
-            try:
-                leaf.delManual()
-                del leaf
-            except:
-                # print("except1")
-                pass
-        try:
-            del self.parentTree.pathNodes[self.path]
-
-        except:
-            # print("except2")
-            pass
-        try:
-            del self.parentTree.sigmaUnchecked[self]
-        except:
-            # print("except3")
-            pass
-        if self.leaf:
-            self.parentTree.maxDepthNodes.remove(self)
-
-        del self.path
-        del self.sigma
-        self.leaves.clear()
-        del self.parentTree
-
-
-    def __delete__(self):
-        #fucking nuke this thing to the astral sea
-        for leaf in self.leaves:
-            try:
-                del leaf
-            except:
-                # print("except1")
-                pass
-        try:
-            del self.parentTree.pathNodes[self.path]
-
-        except:
-            # print("except2")
-            pass
-        try:
-            del self.parentTree.sigmaUnchecked[self]
-        except:
-            # print("except3")
-            pass
-        if self.leaf:
-            self.parentTree.maxDepthNodes.remove(self)
-
-        del self.path
-        del self.sigma
-        self.leaves.clear()
-        del self.parentTree
-        pass
-
-
-    def forStr(self):
-        if self.leaf:
-            return self.even
-        else:
-            return [l.forStr() for l in self.leaves]
-
-    def toTuple(self):
-        return tuple(self.path)
-
-    def __getitem__(self,index):
-        #only becuase 0's were being used previously
-        if index == 0:
-            return self
-
-        return self.leaves[index-1]
+	def layerEquivalence(self):
+		layerEq = [False] * len(self.path)
+		for i in range(1, len(self.path)):
+			layerEq[i] = self.path[i] == self.path[i-1]
+		return layerEq
