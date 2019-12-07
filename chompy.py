@@ -11,8 +11,8 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_N = 3
-DELTA_N = 1
+MAX_N = 4
+DELTA_N = 3
 
 def main(MAX_N, DELTA_N):
 	#seed here for testing
@@ -48,6 +48,7 @@ def main(MAX_N, DELTA_N):
 		print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
 		print(str(n)+"X"+str(n)+" evens: " + str(evens))
 	# print(len(evens))
+	print("4, 1, 1, 1: " + str(tree.pathNodes))
 	util.store((n, evens), DATA_FOLDER / "n&evens.dat")
 
 def expand(evens, tree, initN , deltaN):
@@ -64,16 +65,16 @@ def expand(evens, tree, initN , deltaN):
 	tree.expandTree(initN, n)
 	# util.transverseParents(evens, tree)
 	# util.fillTree(evens, tree, n)
-	print("root node leaves: " + str(tree.rootNode.leaves))
-	print("Tree: \n" + str(tree.pathNodes) + "\n")
+	# print("root node leaves: " + str(tree.rootNode.leaves))
+	# print("Tree: \n" + str(tree.pathNodes) + "\n")
 	for even in evens:
-		print("even: " + str(even))
-		print("bNode: " + str(even.branchNode))
-		print("bMates: " + str(even.branchNode.leaves))
-		print("branchNode == rootNode: " + str(even.branchNode == tree.rootNode))
+		# print("even: " + str(even))
+		# print("bNode: " + str(even.branchNode))
+		# print("bMates: " + str(even.branchNode.leaves))
+		# print("branchNode == rootNode: " + str(even.branchNode == tree.rootNode))
 
 		treeParents.getParents(even, tree)
-		print("\n\n")
+		# print("\n\n")
 	# print("Expanded")
 	# print("Expanded PathNodes: " + str(tree.pathNodes))
 	#iterate through tree starting with lowest sigma and fillTree with that node
@@ -87,16 +88,20 @@ def expand(evens, tree, initN , deltaN):
 		#		 print(f"IT'S FUCKING THERE :{sigma}")
 		# util.fillTree(newEvens, tree, n)
 
-		print("root node leaves: " + str(tree.rootNode.leaves))
-		print("Tree: \n" + str(tree.pathNodes) + "\n")
+		# print("root node leaves: " + str(tree.rootNode.leaves))
+		# print("Tree: \n" + str(tree.pathNodes) + "\n")
+		# for even in newEvens.copy():
 		for even in newEvens:
-			print("even: " + str(even))
-			print("bNode: " + str(even.branchNode))
-			print("bMates: " + str(even.branchNode.leaves))
-			print("\n\n\n")
+			# print("even: " + str(even))
+			# print("bNode: " + str(even.branchNode))
+			# print("bMates: " + str(even.branchNode.leaves))
+			# print("\n\n\n")
 			treeParents.getParents(even, tree)
 
+		# print("setting new evens.")
+
 		# util.transverseParents(newEvens, tree)
+		# newEvens = tree.getSigmaUnchecked(sigma)
 		for even in newEvens.copy():
 			# treeParents.getParents(even, tree)
 			# print("even: " + str(even.__repr__()))

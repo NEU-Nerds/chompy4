@@ -2,7 +2,7 @@ import util
 from collections import defaultdict
 
 def getParents(treeNode, tree):
-	# print("treeNode: " + str(treeNode))
+	print("treeNode: " + str(treeNode))
 	leafVal = treeNode.path[-1]
 
 	#all the leaves of a node will be its parents, but we don't have to worry about these
@@ -11,8 +11,7 @@ def getParents(treeNode, tree):
 	#branchmates with # > than node are parents
 	bMates = treeNode.branchNode.leaves
 	bNode = treeNode.branchNode
-	# print("bMates: " + str(bMates))#IMPT: (2, ) does not seem to be in bMates when this is called!!!!!!
-	#the tree's root node however does have (2, ), so root node and bNode are different
+	# print("bMates: " + str(bMates))
 
 	# print("branchNode: " + str(bNode))
 	# print("branchNode == rootNode: " + str(bNode == tree.rootNode))
@@ -24,9 +23,9 @@ def getParents(treeNode, tree):
 	# for i in range(leafVal, treeNode.path[-2]):
 		# bMates[i].setOdd()
 	for node in bMates:
-		print("node: " + str(node.path))
+		# print("node: " + str(node.path))
 		if node.path[-1] > leafVal:
-			print("Node: " + str(node) + " is odd.")
+			print(str(node) + " is odd.")
 			node.setOdd()
 
 	traversed = defaultdict(lambda: False)
@@ -43,56 +42,86 @@ def getParents(treeNode, tree):
 	while (not len(stackUnchecked) == 0):
 		currNode = stackUnchecked.pop()
 
-		print("curr:\n" + str(currNode))
+		print("\n\ncurr: " + str(currNode))
 
 		currDepth = len(currNode.path)-1
 
+		# print("depth: " + str(currDepth))
+		# print("max depth: " + str(maxDepth))
+
 		if not currDepth == maxDepth:
+			#traverse down the tree
 			if currNode.even:
 				continue
 
-			print("\nlen: " + str(len(layerEquivalence)))
+			# print("\nlen: " + str(len(layerEquivalence)))
 			nextDepth = currDepth + 1
-			print("next: " + str(nextDepth))
-			print("max: " + str(maxDepth))
+			# print("next: " + str(nextDepth))
+			# print("max: " + str(maxDepth))
 			if not layerEquivalence[nextDepth]:
+				# we need another check here to see if curr is a parent of treeNode
+				# if currNode != bNode:
 				stackUnchecked.append(currNode.leaves[leafVal-1])
 				traversed[str(currNode.leaves[leafVal-1])] = True
 			else:
-				print(currNode.even)
-				print("leaves: " + str(currNode.leaves))
-				print("maxDepth: " + str(maxDepth))
-				for i in range(leafVal, currNode.path[-1] + 1):
-					print("i: " + str(i))
+				# print("even?: " + str(currNode.even))
+				# print("leaves: " + str(currNode.leaves))
+				# print("maxDepth: " + str(maxDepth))
+
+				#the problem is w/ this for loop
+				# leafVal is 1, goes up to 3(inclusive)
+				for i in range(treeNode.path[nextDepth], currNode.path[-1] + 1):
+					# print("i: " + str(i))
 					stackUnchecked.append(currNode.leaves[i-1])
 					traversed[str(currNode.leaves[i-1])] = True
 		else:
 			if currNode != treeNode:
-				print("Node: " + str(currNode) + " is odd.")
+				print(str(currNode) + " is odd.")
 				currNode.setOdd()
 			# else:
 				# print("tree node!!")
 
-
+			print("treeCommonAncestor: " + str(treeCommonAncestor))
 			#traverse up the tree
-			if len(treeCommonAncestor.path) < 2:
+			if len(treeCommonAncestor.path) < 1:
 				treeCommonAncestor = None
+				break
 				# commonAncestor is already at the top
 			else:
-				print("len path: " + str(len(treeCommonAncestor.path)))
-				print("path: " + str(treeCommonAncestor.path))
-				print("-1: " + str(treeCommonAncestor.path[-1]))
-				print("-2: " + str(treeCommonAncestor.path[-2]))
-				while treeCommonAncestor.path[-1] == treeCommonAncestor.path[-2]:
+				# print("len path: " + str(len(treeCommonAncestor.path)))
+				# print("path: " + str(treeCommonAncestor.path))
+				# print("-1: " + str(treeCommonAncestor.path[-1]))
+				# print("-2: " + str(treeCommonAncestor.path[-2]))
+
+				#while commonAncestor is the max of its branchmates
+
+				#here in 4x4 case, trying to go across the pruned node
+				# 3,2,1 shouldn't exist b/c it's a parent of
+
+				# while treeCommonAncestor == treeCommonAncestor.branchNode.leaves[-1]:
+				# while treeCommonAncestor.path[-1] == treeCommonAncestor.path[-2]:
+				while traversed[str(treeCommonAncestor.branchNode)]:
 					treeCommonAncestor = treeCommonAncestor.branchNode
+					print("treeCommonAncestor: " + str(treeCommonAncestor))
+
 					if treeCommonAncestor == None:
-						break # TODO: think about if all parents will be added by this point
-					if len(treeCommonAncestor.path) < 2:
-						# commonAncestor is already at the top
+						break
+					if len(treeCommonAncestor.path) < 1:
 						treeCommonAncestor = None
+						print("ancestor is root")
 						break
 
+				# while treeCommonAncestor.path[-1] == treeCommonAncestor.path[-2]:
+				# 	treeCommonAncestor = treeCommonAncestor.branchNode
+				# 	if treeCommonAncestor == None:
+				# 		break # TODO: think about if all parents will be added by this point
+				# 	if len(treeCommonAncestor.path) < 2:
+				# 		# commonAncestor is already at the top
+				# 		treeCommonAncestor = None
+				# 		break
+
 			if treeCommonAncestor == None:
+				print("at top!!")
 				break
 
 			bMatesAncestor = treeCommonAncestor.branchNode.leaves
@@ -100,7 +129,7 @@ def getParents(treeNode, tree):
 				if (not traversed[str(nextNode)]) and nextNode.path[-1] > treeCommonAncestor.path[-1]:
 					stackUnchecked.append(nextNode)
 					traversed[str(nextNode)] = True # TODO: this might not be necessary
-
+			# treeCommonAncestor = treeCommonAncestor.branchNode
 
 """
 no need to return parents!!, just set them odd
@@ -141,6 +170,12 @@ while 'unchecked' is not empty:
 		add currNode to 'parents'
 
 		(now it's time to traverse up the tree)
+		get the next ancestor that hasn't been traversed
+		while commonAncestor's treeParent is traversed:
+			commonAncestor := commonAncestor's treeParent
+			if commonAncestor doesn't exist break
+
+
 		while commonAncestor is the max of its branchmates:
 			commonAncestor = commonAncestor's treeParent
 			if commonAncestor is null:

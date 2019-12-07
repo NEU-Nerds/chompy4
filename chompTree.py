@@ -89,7 +89,7 @@ class Node():
 		self.leaf = False
 
 	def setOdd(self):
-		print("setOdd")
+		# print("setOdd")
 		if self.even is None:
 			self.even = False
 			self.removeFromSigmaUnchecked()
@@ -144,8 +144,8 @@ class Node():
 			return str(self.path)
 
 	def delManual(self):
-		print("delManual: " + str(self))
-		return
+		# print("delManual: " + str(self))
+		# return
 		#fucking nuke this thing to the astral sea
 		for leaf in self.leaves:
 			try:
@@ -161,7 +161,7 @@ class Node():
 			# print("except2")
 			pass
 		try:
-			del self.parentTree.sigmaUnchecked[self]
+			self.parentTree.sigmaUnchecked[self.sigma].remove(self)
 		except:
 			# print("except3")
 			pass
