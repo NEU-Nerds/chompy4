@@ -62,6 +62,10 @@ class Node():
 	branchNode = None#the parent node of this node
 	leaves = []#list of pointers to the treeChildren of this node
 	leaf = False#is this node at max depth
+
+	evenLeaf = False #if the node has a leaf that is even
+	combinedLeaf = False #if node has a leaf that is a combined node
+	nodeDepth = 1 #the depth of this node (1 if not combined)
 	# fullyChecked = False
 	uncheckedLeaves = None#the number of unchecked leaves (inc. indirect leaves) remaining for this node
 	# traversed = None
@@ -86,7 +90,9 @@ class Node():
 
 	def expand(self, depth, sigmaUnchecked):
 		self.leaves = [Node(x,depth-1, self.parentTree, self, list(self.path) + [x]) for x in range(1,self.path[-1]+1)]
+		self.uncheckedLeaves = len(self.leaves)
 		self.leaf = False
+
 
 	def setOdd(self):
 		# print("setOdd")
@@ -94,15 +100,45 @@ class Node():
 			self.even = False
 			self.removeFromSigmaUnchecked()
 
-			if self.leaf:
+			if self.leaf or self.uncheckedLeaves == 0:
 				self.branchNode.decreaseChecked()
-			if self.uncheckedLeaves == 0:
-				self.branchNode.decreaseChecked()
+				self.combine()
+			#
+			# if self.uncheckedLeaves == 0:
+			# 	self.branchNode.decreaseChecked()
+			#	self.combine()
 
 	def decreaseChecked(self):
 		self.uncheckedLeaves -= 1
 		if self.uncheckedLeaves == 0 and self.even is not None:
 			self.branchNode.decreaseChecked()
+			self.combine()
+
+	def combine(self):
+		#combining nodes
+		if not self.evenLeaf and not self.combinedLeaf:
+			#combine
+			self.branchNode.combinedLeaf = True
+			self.combineBranch(self.leaves)
+			self.nodeDepth += 1
+
+	def combineBranch(self, branch):
+		if isinstance(branch, list):
+			for leaf in branch:
+				self.combineBranch(leaf)
+		else:
+			newBranch = []
+			for leaf in branch:
+				newBranch.append(leaf.leaves)
+				self.evenLeaf = self.evenLeaf or leaf.evenLeaf
+				self.increaseChecked(leaf.uncheckedLeaves)
+
+			branch = newBranch
+
+	def increaseChecked(self, x=1):
+		self.uncheckedLeaves += x
+		if self.uncheckedLeaves == x:
+			self.branchNode.increaseChecked(x)
 
 	def removeFromSigmaUnchecked(self):
 		self.parentTree.sigmaUnchecked[self.sigma].remove(self)
@@ -118,6 +154,7 @@ class Node():
 				del leafD
 			self.leaves.clear()
 
+			self.branchNode.evenLeaf = True
 			self.uncheckedLeaves = 0
 			self.branchNode.decreaseChecked()
 
@@ -227,3 +264,7 @@ class Node():
 		for i in range(1, len(self.path)):
 			layerEq[i] = self.path[i] == self.path[i-1]
 		return layerEq
+
+class OddNode(Node):
+	 def __init__(self):
+		 pass
