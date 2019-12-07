@@ -33,6 +33,34 @@ def newNodesRec(n, part):
 			nodes = nodes + newNodesRec(n, part + [i])
 		return nodes
 
+def expandDown(tree, evens, m, n):
+	rootsBySigma = []
+	for i in range(m*n + 1):
+		rootsBySigma[i] = set()
+	#fill rootsBySigma
+	roots = tree.maxDepthNodes
+	for root in roots:
+		#if the root is even
+		if root.even:
+			continue
+
+		for t in range(1, (root.path[-1] * root.nodeDepth) + 1):
+			rootsBySigma[root.sigma + t].add(root)
+
+	for sigma in range(len(rootsBySigma)):
+		for root in rootsBySigma[sigma]:
+			#gen leaf of root at right sigma
+			#add leaf to evens
+			#get parents
+			#gen parents
+			# for parent in parents:
+			# 	rootsBySigma[parent.sigma].remove(parent.rootNode)
+
+			#OR
+			leaf = root.addLeaf()
+			#compare leaf to evens at this depth
+			#set odd or even
+
 def fillTree(nodes, tree, n):
 
 	for nodeObj in nodes.copy():

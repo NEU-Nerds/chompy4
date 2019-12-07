@@ -16,6 +16,7 @@ class Tree():
 	sigmaUnchecked = {}
 	maxDepthNodes = None
 
+
 	pathNodes = {}
 	def __init__(self, n):
 		for s in range(n*n+1):
@@ -38,21 +39,22 @@ class Tree():
 	def __str__(self):
 		return self.rootNode.__str__()
 
-	def expandTree(self, initN, n):
-		#expand and clear(should already be) sigmaUnchecked
-		for s in range(n*n+1):
-			self.sigmaUnchecked[s] = set([])
-
-		#expand existing nodes to maxDepth
-		for node in self.maxDepthNodes.copy():
-			if node.even or len(node.path) < initN:
-				continue
-			node.expand(n-initN, self.sigmaUnchecked)
-
-		#add new subTrees
-		for x in range(initN + 1, n+1):
-			newNode = Node(x, n-1, self, self.rootNode, [x])
-			self.rootNode.leaves.append(newNode)
+	#depricated
+	# def expandTree(self, initN, n):
+	# 	#expand and clear(should already be) sigmaUnchecked
+	# 	for s in range(n*n+1):
+	# 		self.sigmaUnchecked[s] = set([])
+	#
+	# 	#expand existing nodes to maxDepth
+	# 	for node in self.maxDepthNodes.copy():
+	# 		if node.even or len(node.path) < initN:
+	# 			continue
+	# 		node.expand(n-initN, self.sigmaUnchecked)
+	#
+	# 	#add new subTrees
+	# 	for x in range(initN + 1, n+1):
+	# 		newNode = Node(x, n-1, self, self.rootNode, [x])
+	# 		self.rootNode.leaves.append(newNode)
 
 class Node():
 	path = None#tuple of the numbers chosen as the path to get to this point
@@ -93,7 +95,12 @@ class Node():
 		self.uncheckedLeaves = len(self.leaves)
 		self.leaf = False
 
-
+	def addLeaf(self):
+		if len(self.leaves) >= self.path[-1]:
+			print("WTF YA DOING ADDING A LEAF TO A FULL NODE")
+		self.leaves.append(Node(x,depth-1, self.parentTree, self, list(self.path) + [len(self.leaves)]))
+		return self.leaves[-1]
+		
 	def setOdd(self):
 		# print("setOdd")
 		if self.even is None:

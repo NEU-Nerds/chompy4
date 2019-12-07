@@ -67,6 +67,7 @@ def expand(evens, tree, m, dM, n, dN):
     #bottom expand
     for depth in range(n+1, n+dN + 1):
         #expand down, modify evens
+        util.expandDown(tree, evens, m, depth)
         pass
 	return evens, tree
 
