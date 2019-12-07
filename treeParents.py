@@ -2,7 +2,7 @@ import util
 from collections import defaultdict
 
 def getParents(treeNode, tree):
-	print("treeNode: " + str(treeNode))
+	# print("treeNode: " + str(treeNode))
 	leafVal = treeNode.path[-1]
 
 	#all the leaves of a node will be its parents, but we don't have to worry about these
@@ -11,11 +11,11 @@ def getParents(treeNode, tree):
 	#branchmates with # > than node are parents
 	bMates = treeNode.branchNode.leaves
 	bNode = treeNode.branchNode
-	print("bMates: " + str(bMates))#IMPT: (2, ) does not seem to be in bMates when this is called!!!!!!
+	# print("bMates: " + str(bMates))#IMPT: (2, ) does not seem to be in bMates when this is called!!!!!!
 	#the tree's root node however does have (2, ), so root node and bNode are different
 
-	print("branchNode: " + str(bNode))
-	print("branchNode == rootNode: " + str(bNode == tree.rootNode))
+	# print("branchNode: " + str(bNode))
+	# print("branchNode == rootNode: " + str(bNode == tree.rootNode))
 	#confirms that bNode and rootNode are different
 
 

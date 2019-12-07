@@ -60,7 +60,7 @@ class Node():
 	parentTree = None#the pointer to the whole tree
 	even = None
 	branchNode = None#the parent node of this node
-	leaves = []
+	leaves = []#list of pointers to the treeChildren of this node
 	leaf = False#is this node at max depth
 	# fullyChecked = False
 	uncheckedLeaves = None#the number of unchecked leaves (inc. indirect leaves) remaining for this node
@@ -89,6 +89,7 @@ class Node():
 		self.leaf = False
 
 	def setOdd(self):
+		print("setOdd")
 		if self.even is None:
 			self.even = False
 			self.removeFromSigmaUnchecked()
@@ -123,17 +124,28 @@ class Node():
 			print("Resetting an node to be even when it's already been set as " + str(self.even))
 
 	def __repr__(self):
-		return str(self.path)
+		# return str(self.path)
+		# return "HIII"
+		if self.path == None:
+			return "PATH IS NONE"
+		else:
+			return str(self.path)
 
 	def __str__(self):
 		return str(self.path)
-
-		if self.leaf:
-			return str(self.even)
+		#
+		# if self.leaf:
+		# 	return str(self.even)
+		# else:
+		# 	return str([l.forStr() for l in self.leaves])
+		if len(self.path) == 0:
+			return "Root Node"
 		else:
-			return str([l.forStr() for l in self.leaves])
+			return str(self.path)
 
 	def delManual(self):
+		print("delManual: " + str(self))
+		return
 		#fucking nuke this thing to the astral sea
 		for leaf in self.leaves:
 			try:
@@ -158,11 +170,12 @@ class Node():
 
 		del self.path
 		del self.sigma
-		self.leaves.clear()
+		self.leaves.clear()#maybe the problem is with this?
 		del self.parentTree
 
-
 	def __delete__(self):
+		print("del: " + str(self))
+		return
 		#fucking nuke this thing to the astral sea
 		for leaf in self.leaves:
 			try:

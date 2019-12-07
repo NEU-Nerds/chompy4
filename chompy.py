@@ -11,12 +11,22 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_N = 2
+MAX_N = 3
 DELTA_N = 1
 
 def main(MAX_N, DELTA_N):
-	nevens = util.load(DATA_FOLDER / "n&evens.dat")
-	tree = util.load(DATA_FOLDER / "tree.dat")
+	#seed here for testing
+	tree = chompTree.Tree(1)
+	util.fillTree([tree.getNode((1,))], tree, 1)
+	tree.getNode((1,)).setEven()
+
+	n_evens = (1,set([tree.getNode((1,))]))
+	nevens = n_evens
+
+
+	# nevens = util.load(DATA_FOLDER / "n&evens.dat")
+	# tree = util.load(DATA_FOLDER / "tree.dat")
+
 	n = nevens[0]
 	evens = nevens[1]
 	firstStartT = time.time()
@@ -60,8 +70,10 @@ def expand(evens, tree, initN , deltaN):
 		print("even: " + str(even))
 		print("bNode: " + str(even.branchNode))
 		print("bMates: " + str(even.branchNode.leaves))
-		print("\n\n\n")
+		print("branchNode == rootNode: " + str(even.branchNode == tree.rootNode))
+
 		treeParents.getParents(even, tree)
+		print("\n\n")
 	# print("Expanded")
 	# print("Expanded PathNodes: " + str(tree.pathNodes))
 	#iterate through tree starting with lowest sigma and fillTree with that node
@@ -73,9 +85,20 @@ def expand(evens, tree, initN , deltaN):
 		# if n >= 5:
 		#	 if tree.getNode((3,3,3,3,2)) in newEvens:
 		#		 print(f"IT'S FUCKING THERE :{sigma}")
-		util.fillTree(newEvens, tree, n)
+		# util.fillTree(newEvens, tree, n)
+
+		print("root node leaves: " + str(tree.rootNode.leaves))
+		print("Tree: \n" + str(tree.pathNodes) + "\n")
+		for even in newEvens:
+			print("even: " + str(even))
+			print("bNode: " + str(even.branchNode))
+			print("bMates: " + str(even.branchNode.leaves))
+			print("\n\n\n")
+			treeParents.getParents(even, tree)
+
 		# util.transverseParents(newEvens, tree)
 		for even in newEvens.copy():
+			# treeParents.getParents(even, tree)
 			# print("even: " + str(even.__repr__()))
 			# try:
 			even.setEven()
@@ -88,17 +111,14 @@ def expand(evens, tree, initN , deltaN):
 	return evens, tree
 
 def seed():
-
-
-
 	tree = chompTree.Tree(1)
 	util.fillTree([tree.getNode((1,))], tree, 1)
 	tree.getNode((1,)).setEven()
 
 	n_evens = (1,set([tree.getNode((1,))]))
 
-	util.store(n_evens, DATA_FOLDER / "n&evens.dat")
-	util.store(tree, DATA_FOLDER / "tree.dat")
+	# util.store(n_evens, DATA_FOLDER / "n&evens.dat")
+	# util.store(tree, DATA_FOLDER / "tree.dat")
 	# return evens
 
 
