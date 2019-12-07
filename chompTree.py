@@ -110,7 +110,8 @@ class Node():
 	def setEven(self):
 		if self.even is None:
 			self.even = True
-			self.parentTree.sigmaUnchecked[self.sigma].remove(self)
+			# self.parentTree.sigmaUnchecked[self.sigma].remove(self)
+			self.removeFromSigmaUnchecked()
 
 			for leafD in self.leaves:
 				leafD.delManual()
@@ -124,7 +125,7 @@ class Node():
 			print("Resetting an node to be even when it's already been set as " + str(self.even))
 
 	def __repr__(self):
-		# return str(self.path)
+		return str(self.path)
 		# return "HIII"
 		if self.path == None:
 			return "PATH IS NONE"
@@ -138,6 +139,7 @@ class Node():
 		# 	return str(self.even)
 		# else:
 		# 	return str([l.forStr() for l in self.leaves])
+
 		if len(self.path) == 0:
 			return "Root Node"
 		else:
@@ -161,7 +163,8 @@ class Node():
 			# print("except2")
 			pass
 		try:
-			self.parentTree.sigmaUnchecked[self.sigma].remove(self)
+			self.removeFromSigmaUnchecked()
+			# self.parentTree.sigmaUnchecked[self.sigma].remove(self)
 		except:
 			# print("except3")
 			pass
@@ -190,7 +193,8 @@ class Node():
 			# print("except2")
 			pass
 		try:
-			del self.parentTree.sigmaUnchecked[self]
+			self.removeFromSigmaUnchecked()
+			# del self.parentTree.sigmaUnchecked[self]
 		except:
 			# print("except3")
 			pass

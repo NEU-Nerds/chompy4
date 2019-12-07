@@ -48,7 +48,7 @@ def main(MAX_N, DELTA_N):
 		print(str(n)+"X"+str(n)+" #evens: " + str(len(evens)) + "\t in " + str(endT-sT)+"s")
 		print(str(n)+"X"+str(n)+" evens: " + str(evens))
 	# print(len(evens))
-	print("4, 1, 1, 1: " + str(tree.pathNodes))
+	# print("4, 1, 1, 1: " + str(tree.pathNodes))
 	util.store((n, evens), DATA_FOLDER / "n&evens.dat")
 
 def expand(evens, tree, initN , deltaN):
@@ -91,7 +91,7 @@ def expand(evens, tree, initN , deltaN):
 		# print("root node leaves: " + str(tree.rootNode.leaves))
 		# print("Tree: \n" + str(tree.pathNodes) + "\n")
 		# for even in newEvens.copy():
-		for even in newEvens:
+		for even in newEvens.copy():
 			# print("even: " + str(even))
 			# print("bNode: " + str(even.branchNode))
 			# print("bMates: " + str(even.branchNode.leaves))
