@@ -115,6 +115,34 @@ def fillTree(nodes, tree, n):
 						setOdd(newParent, tree)
 			#sets the next row to work on to be the row above the top same row
 			i = j
+
+#returns whether possibleC is a child of possibleP
+#O(2m) --> O(m) (m is length of path)
+def isChild(possibleC, possibleP):
+	pathC = possibleC.path.copy()
+	pathP = possibleP.path
+
+	hasDelta = False;
+	changedVal = 0;# if there hasDelta is true, the value of the new c
+
+	if len(pathC) > len(pathP):
+		return False
+
+	while len(pathP) != len(pathC):
+		pathC.append(0)
+
+	for i in range(len(pathP)):
+		if pathP[i] - pathC[i] < 0:
+			return False
+		elif pathP[i] != pathC[i]:
+			if hasDelta and pathC[i] != changedVal:
+				return False
+			else:
+				hasDelta = True
+				changedVal = pathC[i]
+	return True
+
+
 """
 THIS WAS ACTUALLY CHILDREN
 def transverseParents(nodes, tree):
