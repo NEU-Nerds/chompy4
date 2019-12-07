@@ -657,23 +657,31 @@ for node in data3:
         evens3z[node[2]].append(node)
     else:
         evens3z[node[2]] = [node]
+
+looking = []
+for node in data3:
+    if node[2] == 0:
+        continue
+    if node[0] != node[1] and node[0] <= 10:
+        looking.append(node)
+print(looking)
 # print(evens3.keys())
-prevs = 0
-for i in range(2,50):
-    # print("evens3z["+str(i)+"]: " + str(len(evens3z[i])))
-    s = 0
-    for key in range(2,i+1):
-        s += len(evens3y[key])
-    print("3x"+str(i)+" evensy: " + str(s)+"\tdiff: " + str(s-prevs))
-    prevs = s
-
-
-            if x[0] - i == x[2] and x[1] - (j) == x[2] and x[2] != 0:
-                print("(i,j): (" + str(i)+"," +str(j) + ")\tz: " + str(x[2])+"\tx: " + str(x))
-                wasOne = True
-        if not wasOne:
-            print("No x for ("+str(i)+","+str(j)+")")
-from mpl_toolkits.mplot3d import Axes3D
+# prevs = 0
+# for i in range(2,50):
+#     # print("evens3z["+str(i)+"]: " + str(len(evens3z[i])))
+#     s = 0
+#     for key in range(2,i+1):
+#         s += len(evens3y[key])
+#     print("3x"+str(i)+t" evensy: " + str(s)+"\tdiff: " + str(s-prevs))
+#     prevs = s
+#
+#
+#             if x[0] - i == x[2] and x[1] - (j) == x[2] and x[2] != 0:
+#                 print("(i,j): (" + str(i)+"," +str(j) + ")\tz: " + str(x[2])+"\tx: " + str(x))
+#                 wasOne = True
+#         if not wasOne:
+#             print("No x for ("+str(i)+","+str(j)+")")
+# from mpl_toolkits.mplot3d import Axes3D
 def project(v, normal):
     # dotProd = v[0]*normal[0]+v[1]*normal[1]+v[2]*normal[2]
     # p2 = (v[0]-(dotProd*normal[0]), v[1]-(dotProd*normal[1]), v[2]-(dotProd*normal[2]))
