@@ -14,11 +14,11 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_M = 10
-MAX_N = 10
+MAX_M = 5
+MAX_N = 5
 
-DELTA_N = 1
-DELTA_M = 1
+DELTA_N = 4
+DELTA_M = 4
 
 def main(MAX_N, DELTA_N):
 	#seed here for testing

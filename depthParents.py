@@ -40,7 +40,7 @@ def sideExpansion (evens, uncheckedNodes, pN, dN):
 	endNodes = []
 	for unknown in uncheckedNodes:
 		# print(f"parents of evens: {evenParents}")
-		if tuple(unknown.path) in evenParents:
+		if tuple(unknown.node.path) in evenParents:
 			unknown.setOdd()
 			endNodes.append(unknown)
 		else:
@@ -57,18 +57,19 @@ def sideExpansion (evens, uncheckedNodes, pN, dN):
 # pass in previous width, change in width, and the node
 def getParents (pN, dN, evenNode):
 	parents = []
+	path = evenNode.node.path
 
 	# maybe use layerEquivalence to do this?
 	layerEq = evenNode.layerEquivalence()
 
 	lastAdded = []
 
-	for d in range(len(evenNode.path)):
-		start = max(pN + 1, evenNode.path[0] + 1)
+	for d in range(len(path)):
+		start = max(pN + 1, path[0] + 1)
 		stop = pN + dN + 1
 		if d != 0:
-			start = max(evenNode.path[d] + 1, pN + 1)
-			stop = max(evenNode.path[d-1] + 1, start + 1)
+			start = max(path[d] + 1, pN + 1)
+			stop = max(path[d-1] + 1, start + 1)
 		if layerEq[d]:
 			toAdd = []
 			for parent in lastAdded:
@@ -81,7 +82,7 @@ def getParents (pN, dN, evenNode):
 			parents.extend(lastAdded)
 			lastAdded = []
 		for i in range(start, stop):
-			p = list(evenNode.path[:])
+			p = list(path[:])
 			p[d] = i
 			# parents[-1][d] = i
 			lastAdded.append(tuple(p))
