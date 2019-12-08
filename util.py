@@ -40,20 +40,22 @@ def expandDown(tree, evens, m, n):
 		rootsBySigma.append(set())
 	#fill rootsBySigma
 	roots = tree.maxDepthNodes
-	print("roots: " + str(roots))
+	# print("roots: " + str(roots))
 	for root in roots:
 		#if the root is even
-		if root.even:
+		if root.node.even:
 			continue
 		# print(f"root: {root}")
-		for t in range(1, (root.path[-1] * root.nodeDepth) + 1):
+		# print(f"root.depth: {root.nodeDepth}")
+		# print(f"root.path: {root.node.path}")
+		for t in range(1, (root.node.path[-1] * root.node.nodeDepth) + 1):
 			# print("t: " +str(t))
-			rootsBySigma[root.sigma + t].add(root)
+			rootsBySigma[root.node.sigma + t].add(root)
 			# print(f"root: {root}")
-	print(f"rootsBySigma: {rootsBySigma}")
-	print("\n\n")
+	# print(f"rootsBySigma: {rootsBySigma}")
+	# print("\n\n")
 	for sigma in range(len(rootsBySigma)):
-		print(f"sigma: {sigma}")
+		# print(f"sigma: {sigma}")
 		for root in rootsBySigma[sigma]:
 			# print(f"root: {root}")
 			# print(f"root leaves: {root.leaves}")
@@ -67,13 +69,14 @@ def expandDown(tree, evens, m, n):
 			#OR
 			# print("Adding leaf 2")
 			leaf = root.addLeaf()
+			# print("leaf1: " + str(leaf))
 			# print(f"leaf: {leaf}")
 			evenChild = False
 			for even in evens[-1]:
 				if isChild(even, leaf):
 					evenChild = True
 					break
-
+			# print("leaf2: " + str(leaf))
 			if evenChild:
 				leaf.setOdd()
 			else:
@@ -86,7 +89,7 @@ def fillTree(nodes, tree, n):
 	for nodeObj in nodes.copy():
 
 		# if type(nodeObj) != tuple and type(nodeObj) != list:
-		node = list(nodeObj.path)
+		node = list(nodeObj.node.path)
 		# else:
 		# 	node = list(nodeObj)
 
@@ -139,8 +142,10 @@ def fillTree(nodes, tree, n):
 #returns whether possibleC is a child of possibleP
 #O(2m) --> O(m) (m is length of path)
 def isChild(possibleC, possibleP):
-	pathC = list(possibleC.path) #.copy()
-	pathP = possibleP.path
+	pathC = list(possibleC.node.path) #.copy()
+	pathP = possibleP
+	if not isinstance(pathP, list):
+		pathP = possibleP.node.path
 
 	hasDelta = False;
 	changedVal = 0;# if there hasDelta is true, the value of the new c
