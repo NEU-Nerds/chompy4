@@ -34,17 +34,19 @@ def newNodesRec(n, part):
 		return nodes
 
 def expandDown(tree, evens, m, n):
+	evens.append(set())
 	rootsBySigma = []
 	for i in range(m*n + 1):
-		rootsBySigma[i] = set()
+		rootsBySigma.append(set())
 	#fill rootsBySigma
 	roots = tree.maxDepthNodes
 	for root in roots:
 		#if the root is even
 		if root.even:
 			continue
-
+		print(f"root: {root}")
 		for t in range(1, (root.path[-1] * root.nodeDepth) + 1):
+			print("t: " +str(t))
 			rootsBySigma[root.sigma + t].add(root)
 
 	for sigma in range(len(rootsBySigma)):
@@ -58,8 +60,18 @@ def expandDown(tree, evens, m, n):
 
 			#OR
 			leaf = root.addLeaf()
-			#compare leaf to evens at this depth
-			#set odd or even
+			evenChild = False
+			for even in evens[-1]:
+				if isChild(leaf, even):
+					evenChild = True
+					break
+
+			if evenChild:
+				leaf.setOdd()
+			else:
+				leaf.setEven()
+				evens[-1].add(leaf)
+
 
 def fillTree(nodes, tree, n):
 
@@ -119,7 +131,7 @@ def fillTree(nodes, tree, n):
 #returns whether possibleC is a child of possibleP
 #O(2m) --> O(m) (m is length of path)
 def isChild(possibleC, possibleP):
-	pathC = possibleC.path.copy()
+	pathC = list(possibleC.path) #.copy()
 	pathP = possibleP.path
 
 	hasDelta = False;

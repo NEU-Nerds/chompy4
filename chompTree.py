@@ -13,19 +13,19 @@ Parent representation in terms of tree?
 """
 class Tree():
 	rootNode = None
-	sigmaUnchecked = {}
+	# sigmaUnchecked = {}
 	maxDepthNodes = None
 
 
 	pathNodes = {}
 	def __init__(self, n):
-		for s in range(n*n+1):
-			self.sigmaUnchecked[s] = set([])
+		# for s in range(n*n+1):
+		# 	self.sigmaUnchecked[s] = set([])
 		self.maxDepthNodes = set([])
 		self.rootNode = Node(n,n, self, None)
 
-	def getSigmaUnchecked(self,sigma):
-		return self.sigmaUnchecked[sigma]
+	# def getSigmaUnchecked(self,sigma):
+	# 	return self.sigmaUnchecked[sigma]
 
 	def getNode(self, path):
 		return self.pathNodes[path]
@@ -87,29 +87,37 @@ class Node():
 		self.branchNode = branchNode
 
 		self.parentTree.pathNodes[self.path] = self
-		self.parentTree.sigmaUnchecked[self.sigma].add(self)
+		# self.parentTree.sigmaUnchecked[self.sigma].add(self)
 		self.traversed = False
 
 	def expand(self, depth, sigmaUnchecked):
 		self.leaves = [Node(x,depth-1, self.parentTree, self, list(self.path) + [x]) for x in range(1,self.path[-1]+1)]
 		self.uncheckedLeaves = len(self.leaves)
 		self.leaf = False
+		# return self.leaves
+	def expandNode(self):
+		self.leaves = [Node(x,0, self.parentTree, self, list(self.path) + [x]) for x in range(1,self.path[-1]+1)]
+		self.uncheckedLeaves = len(self.leaves)
+		self.leaf = False
+		return self.leaves
 
 	def addLeaf(self):
-		if len(self.leaves) >= self.path[-1]:
+		if len(self.path) > 0 and len(self.leaves) >= self.path[-1]:
 			print("WTF YA DOING ADDING A LEAF TO A FULL NODE")
-		self.leaves.append(Node(x,depth-1, self.parentTree, self, list(self.path) + [len(self.leaves)]))
+			return 1/0
+		self.leaves.append(Node(len(self.leaves)+1, 0, self.parentTree, self, list(self.path) + [len(self.leaves)+1]))
+		print("added leaf: " + str(self.leaves[-1]))
 		return self.leaves[-1]
-		
+
 	def setOdd(self):
 		# print("setOdd")
 		if self.even is None:
 			self.even = False
-			self.removeFromSigmaUnchecked()
+			# self.removeFromSigmaUnchecked()
 
 			if self.leaf or self.uncheckedLeaves == 0:
 				self.branchNode.decreaseChecked()
-				self.combine()
+				# self.combine()
 			#
 			# if self.uncheckedLeaves == 0:
 			# 	self.branchNode.decreaseChecked()
@@ -119,7 +127,7 @@ class Node():
 		self.uncheckedLeaves -= 1
 		if self.uncheckedLeaves == 0 and self.even is not None:
 			self.branchNode.decreaseChecked()
-			self.combine()
+			# self.combine()
 
 	def combine(self):
 		#combining nodes
@@ -147,16 +155,18 @@ class Node():
 		if self.uncheckedLeaves == x:
 			self.branchNode.increaseChecked(x)
 
-	def removeFromSigmaUnchecked(self):
-		self.parentTree.sigmaUnchecked[self.sigma].remove(self)
+	# def removeFromSigmaUnchecked(self):
+	# 	self.parentTree.sigmaUnchecked[self.sigma].remove(self)
 
 	def setEven(self):
+		print("setting even: " + str(self))
 		if self.even is None:
 			self.even = True
 			# self.parentTree.sigmaUnchecked[self.sigma].remove(self)
-			self.removeFromSigmaUnchecked()
+			# self.removeFromSigmaUnchecked()
 
 			for leafD in self.leaves:
+				print("leafD: " + str(leafD))
 				leafD.delManual()
 				del leafD
 			self.leaves.clear()
@@ -190,6 +200,7 @@ class Node():
 			return str(self.path)
 
 	def delManual(self):
+		return
 		# print("delManual: " + str(self))
 		# return
 		#fucking nuke this thing to the astral sea

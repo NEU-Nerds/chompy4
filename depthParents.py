@@ -2,11 +2,24 @@ import util
 
 #O(evens*deltaW*depth)
 def sideExpansion (evens, uncheckedNodes):
-	for even in evens:
-		for unknown in uncheckedNodes:
+	endNodes = []
+
+	for unknown in uncheckedNodes:
+		evenChild = False
+		for even in evens:
 			#if even is a child of unknown
 			if util.isChild(even, unknown):
-				unknown.setOdd()
+				evenChild = True
+				break
+		if evenChild:
+			unknown.setEven()
+			evens.add(unknown)
+		else:
+			unknown.setOdd()
+			endNodes.append(unknown)
+
+	return endNodes
+
 
 
 
