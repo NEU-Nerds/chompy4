@@ -56,6 +56,7 @@ def expandDown(tree, evens, m, n):
 		print(f"sigma: {sigma}")
 		for root in rootsBySigma[sigma]:
 			print(f"root: {root}")
+			print(f"root leaves: {root.leaves}")
 			#gen leaf of root at right sigma
 			#add leaf to evens
 			#get parents
@@ -64,7 +65,7 @@ def expandDown(tree, evens, m, n):
 			# 	rootsBySigma[parent.sigma].remove(parent.rootNode)
 
 			#OR
-			# print("Adding leaf 2")
+			print("Adding leaf 2")
 			leaf = root.addLeaf()
 			print(f"leaf: {leaf}")
 			evenChild = False

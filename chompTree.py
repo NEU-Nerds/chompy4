@@ -97,12 +97,16 @@ class Node():
 	# 	self.leaf = False
 		# return self.leaves
 	def expandNode(self):
+		if self.even:
+			return
 		self.leaves = [Node(x,0, self.parentTree, self, list(self.path) + [x]) for x in range(1,self.path[-1]+1)]
 		self.uncheckedLeaves = len(self.leaves)
 		self.setNotLeaf()
 		return self.leaves
 
 	def addLeaf(self):
+		if self.even:
+			return
 		# print("Adding leaf to " + str(self))
 		self.setNotLeaf()
 		if len(self.path) > 0 and len(self.leaves) >= self.path[-1]:
@@ -174,6 +178,7 @@ class Node():
 	def setEven(self):
 		print("setting even: " + str(self))
 		if self.even is None:
+			print("setting even: " + str(self))
 			self.even = True
 			# self.parentTree.sigmaUnchecked[self.sigma].remove(self)
 			# self.removeFromSigmaUnchecked()

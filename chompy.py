@@ -78,7 +78,7 @@ def expand(evens, tree, m, dM, n, dN):
 
 	for node in workingNodes:
 		tree.maxDepthNodes.add(node)
-		
+
 	#bottom expand
 	for depth in range(n+1, n+dN + 1):
 		#expand down, modify evens
