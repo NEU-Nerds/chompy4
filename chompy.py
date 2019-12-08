@@ -63,9 +63,11 @@ def expand(evens, tree, m, dM, n, dN):
 	#up to prev n
 	workingNodes = []
 	for x in range(dM):
+		# print("Adding leaf 1")
 		leaf = tree.rootNode.addLeaf()
 		leaf.setOdd()
 		workingNodes.append(leaf)
+
 
 	#expand sideways, modify evens
 	for depth in range(2, n+1):
@@ -74,7 +76,9 @@ def expand(evens, tree, m, dM, n, dN):
 			leaves += node.expandNode()
 		workingNodes = depthParents.sideExpansion(evens[depth], leaves)
 
-
+	for node in workingNodes:
+		tree.maxDepthNodes.add(node)
+		
 	#bottom expand
 	for depth in range(n+1, n+dN + 1):
 		#expand down, modify evens
