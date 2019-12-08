@@ -68,8 +68,8 @@ def getParents (pN, dN, evenNode):
 		start = max(pN + 1, path[0] + 1)
 		stop = pN + dN + 1
 		if d != 0:
-			start = max(path[d] + 1, pN + 1)
-			stop = max(path[d-1] + 1, start + 1)
+			start = min(path[d] + 1, pN + 1)
+			stop = max(path[d-1] + 1, start)
 		if layerEq[d]:
 			toAdd = []
 			for parent in lastAdded:
