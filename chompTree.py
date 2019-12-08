@@ -62,7 +62,7 @@ class Node():
 	parentTree = None#the pointer to the whole tree
 	even = None
 	branchNode = None#the parent node of this node
-	leaves = []#list of pointers to the treeChildren of this node
+	leaves = None#list of pointers to the treeChildren of this node
 	leaf = False#is this node at max depth
 
 	evenLeaf = False #if the node has a leaf that is even
@@ -81,6 +81,7 @@ class Node():
 			self.parentTree.maxDepthNodes.add(self)
 			self.leaf = True
 			self.uncheckedLeaves = 0
+			self.leaves = []
 		print("created " + str(inPath))
 		self.path = tuple(inPath)
 		self.sigma = sum(inPath)
@@ -177,6 +178,7 @@ class Node():
 			# self.parentTree.sigmaUnchecked[self.sigma].remove(self)
 			# self.removeFromSigmaUnchecked()
 
+			# WHY DOES THIS NEED TO BE COMMENTED?
 			for leafD in self.leaves:
 				print("leafD: " + str(leafD))
 				leafD.delManual()
