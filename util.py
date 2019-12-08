@@ -70,7 +70,7 @@ def expandDown(tree, evens, m, n):
 			# print(f"leaf: {leaf}")
 			evenChild = False
 			for even in evens[-1]:
-				if isChild(even,leaf):
+				if isChild(even, leaf):
 					evenChild = True
 					break
 
