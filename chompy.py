@@ -9,11 +9,13 @@ import depthParents
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 #THIS_FOLDER = "D:/Mass Storage/Math/chompy"
+# THIS_FOLDER = "/Users/tymarking/Documents/chomp/chompy4"
+# print(THIS_FOLDER)
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_M = 3
-MAX_N = 6
+MAX_M = 10
+MAX_N = 10
 
 DELTA_N = 1
 DELTA_M = 1
@@ -63,7 +65,7 @@ def expand(evens, tree, m, dM, n, dN):
 	#up to prev n
 	workingNodes = []
 	for x in range(dM):
-		# print("Adding leaf 1")
+		# print("Adding leaf sideExpansion")
 		leaf = tree.rootNode.addLeaf()
 		leaf.setOdd()
 		workingNodes.append(leaf)

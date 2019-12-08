@@ -55,7 +55,8 @@ class Node():
 
 	evenLeaf = False #if the node has a leaf that is even
 	combinedLeaf = False #if node has a leaf that is a combined node
-	internalLeaves = 0 #number of leaves which themselves have full leaves
+	developedLeaves = 0 #number of leaves which themselves have full leaves
+	maxLeaves = 0 # number of leaves at max depth
 	nodeDepth = 1 #the depth of this node (1 if not combined)
 	# fullyChecked = False
 	uncheckedLeaves = None#the number of unchecked leaves (inc. indirect leaves) remaining for this node
@@ -65,7 +66,7 @@ class Node():
 	def __init__(self, max, depth, parentTreeIn, branchNodeW, wrap, inPath = []):
 		self.parentTree = parentTreeIn
 		self.uncheckedLeaves = 0
-		self.internalLeaves = 0
+		# self.internalLeaves = 0
 		# print("")
 		# print(f"max: {max}")
 		# print(f"depth: {depth}")
@@ -73,7 +74,7 @@ class Node():
 		# print(f"branchNode: {branchNodeW}")
 		# print(f"wrap: {wrap}")
 		# print(f"inPath: {inPath}")
-
+		self.maxLeaves = max
 		self.wrapper = wrap
 
 		# self.uncheckedLeaves = 0
@@ -84,7 +85,7 @@ class Node():
 
 		self.parentTree.pathNodes[self.path] = self.wrapper
 		# self.parentTree.sigmaUnchecked[self.sigma].add(self)
-		self.traversed = False
+		# self.traversed = False
 		if len(self.path) > 1:
 			self.branchNodeW.increaseUnchecked()
 
@@ -117,20 +118,24 @@ class Node():
 		w = self.wrapper
 		if self.even:
 			return
-		# print("\n\nAdding leaf to " + str(self))
+		# print("Adding leaf to " + str(self))
 		self.setNotLeaf()
+		if self.nodeDepth > 1:
+			print("WTF YA DOING ADDING A LEAF TO A COMBINED NODE")
+			return 1/0
 		if len(self.path) > 0 and len(self.leaves) >= self.path[-1]:
 			print("WTF YA DOING ADDING A LEAF TO A FULL NODE")
 			return 1/0
 		# print(f"pre leaves: {self.leaves}")
 		node = nodeWrapper(len(self.leaves)+1, 0, self.parentTree, self.wrapper, list(self.path) + [len(self.leaves)+1])
-		self.increaseUnchecked()
+		# self.increaseUnchecked()
 		self.leaves.append(node)
 		# print(f"post leaves: {self.leaves}")
 		# print("added leaf: " + str(node))
 		# print(f"w.node.leaves {w.node.leaves}")
 		if len(w.node.path) > 0 and len(w.node.leaves) == w.node.path[-1]:
-			w.node.branchNodeW.increaseInternalLeaves()
+			# print("Incearsing developedLeaves from addLeaf")
+			w.node.branchNodeW.increaseDevelopedLeaves()
 		# print(f"w.node.leaves {w.node.leaves}")
 		return node
 
@@ -148,21 +153,46 @@ class Node():
 			#self.leaf or
 			if self.uncheckedLeaves == 0:
 				self.branchNodeW.decreaseUnchecked()
-				if len(self.leaves) > 0:
-					self.combine()
+				# if len(self.leaves) > 0:
+				#
+				# 	self.combine()
 
 	def combine(self):
+		# return
 		# print("attempting combining: " + str(self))
 		#combining nodes
 		# print("combine node leaves: " + str(self.leaves))
-		if not self.evenLeaf and not self.combinedLeaf and self.internalLeaves == self.path[-1] and self.even == False:
-			print("combining: " + str(self) + " to depth: " + str(self.nodeDepth + 1))
+		if not self.evenLeaf and not self.combinedLeaf and self.developedLeaves == self.maxLeaves and self.even == False:
+			# print("combining: " + str(self) + " to depth: " + str(self.nodeDepth + 1))
+			# print(f"original evenLeaf: {self.evenLeaf}")
+			# print(f"original combinedLeaf: {self.combinedLeaf}")
+			# print(f"original developedLeaves: {self.developedLeaves}")
+			# print(f"original maxLeaves: {self.maxLeaves}")
 			# print("original leaves: " + str(self.leaves))
 			#combine
+
 			self.branchNodeW.node.combinedLeaf = True
+			self.developedLeaves = 0
+			self.maxLeaves = 0
+			self.combineBranch1(self.leaves)
 			self.leaves = self.combineBranch(self.leaves)
 			self.nodeDepth += 1
+			# print(f"combined evenLeaf: {self.evenLeaf}")
+			# print(f"combined combinedLeaf: {self.combinedLeaf}")
+			# print(f"combined developedLeaves: {self.developedLeaves}")
+			# print(f"combined maxLeaves: {self.maxLeaves}")
 			# print("combined leaves: " + str(self.leaves))
+			# print("")
+
+	def combineBranch1(self, branch):
+		if isinstance(branch[0], list):
+			for leaf in branch:
+				self.combineBranch1(leaf)
+		else:
+			for leaf in branch:
+				if len(leaf.node.path) > 0:
+					self.maxLeaves += leaf.node.path[-1]
+
 
 	def combineBranch(self, branch):
 		if isinstance(branch[0], list):
@@ -174,10 +204,17 @@ class Node():
 			newBranch = []
 			for leaf in branch:
 				# print("internal leaf: " + str(leaf))
+
 				# print(f"leaf.node.leaves: {leaf.node.leaves}")
 				newBranch.append(leaf.node.leaves)
 				self.evenLeaf = self.evenLeaf or leaf.node.evenLeaf
+
+				for l in leaf.node.leaves:
+					if len(l.node.leaves) == l.node.path[-1]:
+						self.increaseDevelopedLeaves()
+
 				self.increaseUnchecked(leaf.node.uncheckedLeaves)
+
 				try:
 					leaf.delManual()
 				except:
@@ -193,6 +230,7 @@ class Node():
 		if self.uncheckedLeaves == 0 and self.even is not None:
 			self.branchNodeW.decreaseUnchecked()
 			if len(self.leaves) > 0:
+				# print("!")
 				self.combine()
 
 	def increaseUnchecked(self, x=1):
@@ -201,12 +239,12 @@ class Node():
 			if len(self.path) > 0:
 				self.branchNodeW.increaseUnchecked(x)
 
-	def decreaseInternalLeaves(self):
-		self.internalLeaves -= 1
+	def decreaseDevelopedLeaves(self):
+		self.developedLeaves -=1
 
-	def increaseInternalLeaves(self):
-		self.internalLeaves += 1
-		if len(self.path) > 0 and self.internalLeaves == self.path[-1]:
+	def increaseDevelopedLeaves(self, x=1):
+		self.developedLeaves += x
+		if self.developedLeaves == self.maxLeaves:
 			self.combine()
 
 	def setEven(self):
@@ -257,6 +295,7 @@ class Node():
 			return str(self.path)
 
 	def delManual(self):
+
 		# return
 		# print("delManual: " + str(self))
 		# return
@@ -276,9 +315,21 @@ class Node():
 
 		if self.leaf:
 			self.parentTree.maxDepthNodes.remove(self)
-
+		del self.leaves
 		del self.path
 		del self.sigma
+		del self.uncheckedLeaves
+
+		del self.wrapper
+		del self.even
+		del self.branchNodeW
+		del self.evenLeaf
+		del self.combinedLeaf
+		del self.developedLeaves
+		del self.maxLeaves
+		del self.nodeDepth
+
+
 		# self.leaves.clear()#maybe the problem is with this?
 		del self.parentTree
 
@@ -375,11 +426,11 @@ class nodeWrapper():
 	def increaseUnchecked(self, x=1):
 		return self.node.increaseUnchecked(x)
 
-	def decreaseInternalLeaves(self):
-		return self.node.decreaseInternalLeaves()
+	def decreaseDevelopedLeaves(self):
+		return self.node.decreaseDevelopedLeaves()
 
-	def increaseInternalLeaves(self):
-		return self.node.increaseInternalLeaves()
+	def increaseDevelopedLeaves(self, x=1):
+		return self.node.increaseDevelopedLeaves(x)
 
 	def setEven(self):
 		return self.node.setEven()

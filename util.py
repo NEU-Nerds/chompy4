@@ -46,7 +46,7 @@ def expandDown(tree, evens, m, n):
 		if root.node.even:
 			continue
 		# print(f"root: {root}")
-		# print(f"root.depth: {root.nodeDepth}")
+		# print(f"root.depth: {root.node.nodeDepth}")
 		# print(f"root.path: {root.node.path}")
 		for t in range(1, (root.node.path[-1] * root.node.nodeDepth) + 1):
 			# print("t: " +str(t))
@@ -67,7 +67,7 @@ def expandDown(tree, evens, m, n):
 			# 	rootsBySigma[parent.sigma].remove(parent.rootNode)
 
 			#OR
-			# print("Adding leaf 2")
+			# print("Adding leaf expandDown")
 			leaf = root.addLeaf()
 			# print("leaf1: " + str(leaf))
 			# print(f"leaf: {leaf}")
