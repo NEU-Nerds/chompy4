@@ -11,7 +11,7 @@ def sideExpansion (evens, uncheckedNodes):
 			if util.isChild(even, unknown):
 				evenChild = True
 				break
-		if evenChild:
+		if not evenChild:
 			unknown.setEven()
 			evens.add(unknown)
 		else:
