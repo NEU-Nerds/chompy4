@@ -12,8 +12,8 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 THIS_FOLDER = Path(THIS_FOLDER)
 DATA_FOLDER = Path(THIS_FOLDER, "./data/epoc2/")
 
-MAX_M = 3
-MAX_N = 3
+MAX_M = 4
+MAX_N = 4
 
 DELTA_N = 1
 DELTA_M = 1
@@ -74,7 +74,7 @@ def expand(evens, tree, m, dM, n, dN):
 		leaves = []
 		for node in workingNodes:
 			leaves += node.expandNode()
-		workingNodes = depthParents.sideExpansion(evens[depth], leaves)
+		workingNodes = depthParents.sideExpansion(evens[depth], leaves, m, dM)
 
 	for node in workingNodes:
 		tree.maxDepthNodes.add(node)
