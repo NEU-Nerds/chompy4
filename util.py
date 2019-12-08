@@ -45,9 +45,9 @@ def expandDown(tree, evens, m, n):
 		#if the root is even
 		if root.even:
 			continue
-		print(f"root: {root}")
+		# print(f"root: {root}")
 		for t in range(1, (root.path[-1] * root.nodeDepth) + 1):
-			print("t: " +str(t))
+			# print("t: " +str(t))
 			rootsBySigma[root.sigma + t].add(root)
 			# print(f"root: {root}")
 	print(f"rootsBySigma: {rootsBySigma}")
@@ -55,8 +55,8 @@ def expandDown(tree, evens, m, n):
 	for sigma in range(len(rootsBySigma)):
 		print(f"sigma: {sigma}")
 		for root in rootsBySigma[sigma]:
-			print(f"root: {root}")
-			print(f"root leaves: {root.leaves}")
+			# print(f"root: {root}")
+			# print(f"root leaves: {root.leaves}")
 			#gen leaf of root at right sigma
 			#add leaf to evens
 			#get parents
@@ -65,9 +65,9 @@ def expandDown(tree, evens, m, n):
 			# 	rootsBySigma[parent.sigma].remove(parent.rootNode)
 
 			#OR
-			print("Adding leaf 2")
+			# print("Adding leaf 2")
 			leaf = root.addLeaf()
-			print(f"leaf: {leaf}")
+			# print(f"leaf: {leaf}")
 			evenChild = False
 			for even in evens[-1]:
 				if isChild(even,leaf):

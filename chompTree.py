@@ -111,10 +111,10 @@ class Node():
 		if len(self.path) > 0 and len(self.leaves) >= self.path[-1]:
 			print("WTF YA DOING ADDING A LEAF TO A FULL NODE")
 			return 1/0
-		print(f"leaves: {self.leaves}")
+		print(f"pre leaves: {self.leaves}")
 		node = Node(len(self.leaves)+1, 0, self.parentTree, self, list(self.path) + [len(self.leaves)+1])
 		self.leaves.append(node)
-		print(f"leaves: {self.leaves}")
+		print(f"post leaves: {self.leaves}")
 		print("added leaf: " + str(node))
 
 		return self.leaves[-1]
@@ -177,7 +177,7 @@ class Node():
 	def setEven(self):
 		print("setting even: " + str(self))
 		if self.even is None:
-			print("setting even: " + str(self))
+			# print("setting even: " + str(self))
 			self.even = True
 			# self.parentTree.sigmaUnchecked[self.sigma].remove(self)
 			# self.removeFromSigmaUnchecked()
@@ -191,10 +191,10 @@ class Node():
 			self.branchNode.evenLeaf = True
 			self.uncheckedLeaves = 0
 			self.branchNode.decreaseChecked()
-			print("removing from maxDepthNodes")
-			print(f"maxDepthNodes: {self.parentTree.maxDepthNodes}")
+			# print("removing from maxDepthNodes")
+			# print(f"maxDepthNodes: {self.parentTree.maxDepthNodes}")
 			self.parentTree.maxDepthNodes.remove(self)
-			print(f"maxDepthNodes: {self.parentTree.maxDepthNodes}")
+			# print(f"maxDepthNodes: {self.parentTree.maxDepthNodes}")
 
 		else:
 			print("Resetting an node to be even when it's already been set as " + str(self.even))
